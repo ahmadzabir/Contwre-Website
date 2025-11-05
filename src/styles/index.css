@@ -49,13 +49,8 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
-  /* Enable hardware acceleration */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  /* Force GPU acceleration */
+  /* Optimize scrolling performance */
   will-change: scroll-position;
-  /* Enhanced smooth scrolling */
-  scroll-snap-type: y proximity;
 }
 
 * {
@@ -64,12 +59,7 @@ html {
   /* Optimize rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Enable GPU acceleration for all elements */
-  will-change: auto;
-  backface-visibility: hidden;
-  perspective: 1000px;
-  /* Force compositing layer */
-  transform: translateZ(0);
+  /* Only apply GPU acceleration to animated elements, not all elements */
 }
 
 /* Custom scrollbar for better visibility */
@@ -96,8 +86,7 @@ body {
   -webkit-overflow-scrolling: touch;
   /* Reduce paint operations */
   contain: layout style paint;
-  /* Force GPU acceleration */
-  transform: translateZ(0);
+  /* Optimize for smooth scrolling */
   will-change: scroll-position;
   
   /* Main Website Background - Applied to body */
@@ -325,8 +314,7 @@ a:hover { color: #BFDBFE; }
 .section-spacing {
   @apply py-16 sm:py-20 md:py-24 lg:py-28;
   /* Add scroll snap for smooth section transitions */
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  /* Removed scroll-snap for better performance */
 }
   
   .container-padding {

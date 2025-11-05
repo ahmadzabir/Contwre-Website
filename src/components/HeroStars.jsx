@@ -25,13 +25,13 @@ function HeroStars() {
   const generateHeroStars = useCallback(() => {
     const stars = []
     
-    // Create different star types for galaxy effect
+    // Create different star types for galaxy effect - optimized count for performance
     const starTypes = [
       { count: 8, sizeRange: [2, 4], opacityRange: [0.8, 1], color: '#FFFFFF', speedRange: [0.005, 0.01] }, // Bright large stars
-      { count: 15, sizeRange: [1, 2], opacityRange: [0.6, 0.8], color: '#00FFFF', speedRange: [0.01, 0.02] }, // Medium cyan stars
-      { count: 25, sizeRange: [0.5, 1], opacityRange: [0.4, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] }, // Small white stars
-      { count: 35, sizeRange: [0.3, 0.6], opacityRange: [0.2, 0.4], color: '#87CEEB', speedRange: [0.03, 0.04] }, // Tiny sky blue stars
-      { count: 20, sizeRange: [0.2, 0.4], opacityRange: [0.1, 0.3], color: '#FFFFFF', speedRange: [0.04, 0.05] }, // Micro stars
+      { count: 12, sizeRange: [1, 2], opacityRange: [0.6, 0.8], color: '#00FFFF', speedRange: [0.01, 0.02] }, // Medium cyan stars
+      { count: 15, sizeRange: [0.5, 1], opacityRange: [0.4, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] }, // Small white stars
+      { count: 10, sizeRange: [0.3, 0.6], opacityRange: [0.2, 0.4], color: '#87CEEB', speedRange: [0.03, 0.04] }, // Tiny sky blue stars
+      { count: 5, sizeRange: [0.2, 0.4], opacityRange: [0.1, 0.3], color: '#FFFFFF', speedRange: [0.04, 0.05] }, // Micro stars
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -49,7 +49,7 @@ function HeroStars() {
           opacity: opacity,
           baseX: Math.random() * 100,
           baseY: Math.random() * 100,
-          scrollUpSpeed: Math.random() * 0.15 + 0.05, // Slower upward movement
+          scrollUpSpeed: Math.random() * 0.20 + 0.12, // Prominent upward movement
           fadeOutPoint: Math.random() * 100 + 50, // Earlier fade out
           driftSpeed: Math.random() * 0.008 + 0.002, // Very slow drift
           twinkleSpeed: Math.random() * 0.015 + 0.005, // Twinkling effect
@@ -73,7 +73,7 @@ function HeroStars() {
   }, [])
 
   useEffect(() => {
-    const throttledScroll = throttle(handleScroll, 16) // 60fps throttling for smoother performance
+    const throttledScroll = throttle(handleScroll, 32) // 30fps throttling for better performance
     window.addEventListener('scroll', throttledScroll, { passive: true })
     setScrollY(window.scrollY)
     return () => {
@@ -86,7 +86,7 @@ function HeroStars() {
 
   useEffect(() => {
     const animate = (currentTime) => {
-      if (currentTime - lastTimeRef.current >= 33) { // 30fps for smooth animation
+      if (currentTime - lastTimeRef.current >= 50) { // 20fps for better performance
         setTimeOffset(currentTime / 5000) // Much slower time progression
         lastTimeRef.current = currentTime
       }
@@ -167,9 +167,9 @@ function HeroStars() {
             twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.2 + 0.8
         }
 
-        // Scroll-based upward movement and fade out
+        // Scroll-based upward movement and fade out - more prominent effect
         const scrollUpOffset = scrollY * star.scrollUpSpeed
-        const scrollFadeOut = Math.max(0, 1 - scrollY / 200) // Fade out over 200px scroll
+        const scrollFadeOut = Math.max(0, 1 - scrollY / 300) // Fade out over 300px scroll for more visibility
         
         // Calculate final position
         const finalX = (star.x + moveX + driftX) % 100
@@ -178,10 +178,7 @@ function HeroStars() {
         // Enhanced opacity with twinkling and scroll fade
         const finalOpacity = star.opacity * scrollFadeOut * twinkle
 
-        // Different glow effects based on star size
-        const glowSize = star.size * (star.type === 0 ? 3 : star.type === 1 ? 2.5 : 2)
-        const glowOpacity = star.type <= 1 ? 0.3 : star.type <= 2 ? 0.2 : 0.1
-
+        // Simplified rendering - no expensive box shadows for performance
         return (
           <div
             key={star.id}
@@ -193,9 +190,9 @@ function HeroStars() {
               height: `${star.size}px`,
               backgroundColor: star.color,
               opacity: finalOpacity,
-              willChange: 'transform, opacity',
-              transition: 'opacity 0.5s ease-out', // Smoother fade out
-              boxShadow: `0 0 ${glowSize}px ${star.color}${Math.floor(glowOpacity * 255).toString(16).padStart(2, '0')}`,
+              transform: 'translateZ(0)', // GPU acceleration
+              willChange: 'opacity', // Only what changes
+              transition: 'opacity 0.3s ease-out', // Faster transition
             }}
           />
         )

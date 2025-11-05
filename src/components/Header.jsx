@@ -29,7 +29,7 @@ function Header() {
   }, [])
 
   useEffect(() => {
-    const throttledScroll = throttle(handleScroll, 16) // 60fps throttling
+    const throttledScroll = throttle(handleScroll, 50) // 20fps throttling for better performance
     window.addEventListener('scroll', throttledScroll, { passive: true })
     return () => window.removeEventListener('scroll', throttledScroll)
   }, [handleScroll])
