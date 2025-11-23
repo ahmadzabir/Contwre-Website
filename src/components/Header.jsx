@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 // Throttle function for performance
 const throttle = (func, limit) => {
@@ -18,19 +18,19 @@ const throttle = (func, limit) => {
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const { scrollY } = useScroll()
-  
-  const headerOpacity = useTransform(scrollY, [0, 50], [0.85, 1])
-  const headerBlur = useTransform(scrollY, [0, 50], [8, 20])
-  const scrollProgress = useTransform(scrollY, [0, document.documentElement.scrollHeight - window.innerHeight], [0, 1])
+  const [scrollProgress, setScrollProgress] = useState(0)
 
   const handleScroll = useCallback(() => {
-    setIsScrolled(window.scrollY > 10)
+    const scrollY = window.scrollY
+    setIsScrolled(scrollY > 10)
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight
+    setScrollProgress(totalHeight > 0 ? scrollY / totalHeight : 0)
   }, [])
 
   useEffect(() => {
-    const throttledScroll = throttle(handleScroll, 50) // 20fps throttling for better performance
+    const throttledScroll = throttle(handleScroll, 100) // Reduced frequency for better performance
     window.addEventListener('scroll', throttledScroll, { passive: true })
+    handleScroll() // Initial call
     return () => window.removeEventListener('scroll', throttledScroll)
   }, [handleScroll])
 
@@ -53,9 +53,7 @@ function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       style={{ 
-        opacity: headerOpacity,
-        backdropFilter: `blur(${headerBlur}px)`,
-        willChange: 'transform, opacity, backdrop-filter'
+        willChange: 'auto'
       }}
     >
       <div className="w-full max-w-7xl mx-auto container-padding">
@@ -165,10 +163,10 @@ function Header() {
         </motion.div>
         
         {/* Enhanced Scroll Progress Indicator */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 rounded-full shadow-lg"
+        <div
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 rounded-full shadow-lg transition-transform duration-150 ease-out"
           style={{
-            scaleX: scrollProgress,
+            transform: `scaleX(${scrollProgress})`,
             transformOrigin: "left",
             boxShadow: "0 0 10px rgba(16, 185, 129, 0.5)"
           }}

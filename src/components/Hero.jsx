@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { useCursorParallax, useMagnetEffect } from '../hooks/useCursorEffects'
 import HeroStars from './HeroStars'
 
 function Hero() {
@@ -11,20 +10,12 @@ function Hero() {
     }
   }, [])
 
-  const { ref: heroRef, mousePosition } = useCursorParallax(0.05) // Reduced parallax intensity
-  const { ref: ctaRef, magnetPosition: ctaMagnet } = useMagnetEffect(0.15) // Reduced magnet effect
-  const { ref: cta2Ref, magnetPosition: cta2Magnet } = useMagnetEffect(0.15)
-
   return (
     <section id="top" className="hero-bg relative overflow-hidden min-h-screen flex items-center pt-32">
       {/* Hero Stars with scroll animation */}
       <HeroStars />
       
-      <div
-        ref={heroRef}
-        className="relative z-10 w-full max-w-7xl mx-auto container-padding"
-        style={{ transform: `translate(${mousePosition.x * 5}px, ${mousePosition.y * 5}px)` }}
-      >
+      <div className="relative z-10 w-full max-w-7xl mx-auto container-padding">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

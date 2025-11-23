@@ -49,8 +49,8 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
-  /* Optimize scrolling performance */
-  will-change: scroll-position;
+  /* Optimize scrolling - remove will-change for better performance */
+  overflow-x: hidden;
 }
 
 * {
@@ -84,10 +84,9 @@ body {
   overflow-x: hidden;
   /* Optimize scrolling performance */
   -webkit-overflow-scrolling: touch;
-  /* Reduce paint operations */
+  /* Reduce paint operations - use contain for better performance */
   contain: layout style paint;
-  /* Optimize for smooth scrolling */
-  will-change: scroll-position;
+  /* Remove will-change - let browser optimize automatically */
   
   /* Main Website Background - Applied to body */
   background: 
