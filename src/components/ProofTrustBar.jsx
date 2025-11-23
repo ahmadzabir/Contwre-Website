@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 
 function ProofTrustBar() {
-  const [allLogosLoaded, setAllLogosLoaded] = useState(false)
-  const [loadedLogos, setLoadedLogos] = useState(new Set())
-
   const clients = [
     { name: "6 Pack Macros", logo: "/assets/client-logos/6_Pack_Macros.png" },
     { name: "Classic Programmers", logo: "/assets/client-logos/Classic_Programmers.png" },
@@ -19,33 +16,10 @@ function ProofTrustBar() {
     { name: "Vigor Wolf", logo: "/assets/client-logos/Vigor_Wolf.png" }
   ]
 
-  // Preload all logos
-  useEffect(() => {
-    const preloadImages = () => {
-      const promises = clients.map((client) => {
-        return new Promise((resolve) => {
-          const img = new Image()
-          img.onload = () => {
-            setLoadedLogos(prev => new Set([...prev, client.logo]))
-            resolve()
-          }
-          img.onerror = () => resolve() // Continue even if one fails
-          img.src = client.logo
-        })
-      })
-      
-      Promise.all(promises).then(() => {
-        setAllLogosLoaded(true)
-      })
-    }
-
-    preloadImages()
-  }, [])
-
   return (
     <section className="section-spacing relative overflow-hidden w-full">
       {/* Section Header */}
-      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-4">
+      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-2">
         <div className="text-center">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold gradient-text-white mb-1">
             Trusted by founders who scale
@@ -53,20 +27,12 @@ function ProofTrustBar() {
         </div>
       </div>
 
-      {/* Loading indicator */}
-      {!allLogosLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-white/50 text-sm">Loading logos...</div>
-        </div>
-      )}
-
       {/* Truly Infinite Scrolling Logo Carousel */}
-      <div className="relative w-full overflow-hidden py-6 carousel-container pointer-events-none select-none">
+      <div className="relative w-full overflow-hidden py-3 carousel-container pointer-events-none select-none">
         <motion.div 
           className="carousel-track"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: allLogosLoaded ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
         >
           {/* First set of logos */}
           {clients.map((client, index) => (
@@ -74,18 +40,14 @@ function ProofTrustBar() {
               key={`logo-1-${index}`}
               className="carousel-item flex items-center justify-center"
             >
-              {loadedLogos.has(client.logo) ? (
-                <img
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
-                  loading="eager"
-                  decoding="async"
-                  fetchpriority="high"
-                />
-              ) : (
-                <div className="w-12 h-5 bg-white/10 rounded animate-pulse"></div>
-              )}
+              <img
+                src={client.logo}
+                alt={`${client.name} logo`}
+                className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
             </div>
           ))}
           {/* Second set of logos for seamless loop */}
@@ -94,18 +56,14 @@ function ProofTrustBar() {
               key={`logo-2-${index}`}
               className="carousel-item flex items-center justify-center"
             >
-              {loadedLogos.has(client.logo) ? (
-                <img
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
-                  loading="eager"
-                  decoding="async"
-                  fetchpriority="high"
-                />
-              ) : (
-                <div className="w-12 h-5 bg-white/10 rounded animate-pulse"></div>
-              )}
+              <img
+                src={client.logo}
+                alt={`${client.name} logo`}
+                className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
             </div>
           ))}
           {/* Third set of logos for extra smoothness */}
@@ -114,18 +72,14 @@ function ProofTrustBar() {
               key={`logo-3-${index}`}
               className="carousel-item flex items-center justify-center"
             >
-              {loadedLogos.has(client.logo) ? (
-                <img
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
-                  loading="eager"
-                  decoding="async"
-                  fetchpriority="high"
-                />
-              ) : (
-                <div className="w-12 h-5 bg-white/10 rounded animate-pulse"></div>
-              )}
+              <img
+                src={client.logo}
+                alt={`${client.name} logo`}
+                className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+              />
             </div>
           ))}
         </motion.div>
@@ -163,7 +117,7 @@ function ProofTrustBar() {
         .carousel-item {
           flex: 0 0 auto;
           width: 12rem;
-          height: 5rem;
+          height: 3.5rem;
         }
         
         @keyframes infiniteScroll {

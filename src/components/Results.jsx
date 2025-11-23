@@ -133,57 +133,45 @@ function Results() {
                 </motion.h2>
         </motion.div>
 
-        {/* Animated Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 content-spacing-lg items-start">
+        {/* Stats Grid - Recoded from scratch */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
           {stats.map((stat, index) => {
             const count = useCounterAnimation(stat.value, headerVisible, 2000)
             
             return (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="relative group h-full"
+                className="relative"
               >
-                <div className="card-glass p-6 text-center group-hover:scale-105 transition-all duration-150 group-hover:shadow-glass-lg relative overflow-hidden h-40 flex flex-col justify-between items-center w-full">
-                  {/* Gradient Background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-10 transition-opacity duration-150`} />
+                <div className="card-glass p-8 text-center h-full flex flex-col items-center justify-start">
+                  {/* Stat Value */}
+                  <motion.div 
+                    className="text-5xl md:text-6xl font-bold text-white mb-4 font-mono"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    {stat.label === 'Time to first qualified lead' ? (
+                      <>
+                        {Math.round(count)}
+                        <span className="text-3xl md:text-4xl ml-1">{stat.suffix.trim()}</span>
+                      </>
+                    ) : (
+                      <>
+                        {count.toFixed(stat.suffix === '+' ? 0 : 1)}{stat.suffix}
+                      </>
+                    )}
+                  </motion.div>
                   
-                  {/* Spacer to push content to top */}
-                  <div className="flex-1 flex items-center justify-center min-h-0">
-                    {/* Animated Counter */}
-                    <motion.div 
-                      className="text-4xl md:text-5xl font-bold text-white font-mono group-hover:text-emerald-400 transition-colors duration-150 flex items-center justify-center"
-                      initial={{ opacity: 0, scale: 0.5 }}
-                      animate={headerVisible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-                      transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
-                    >
-                      {stat.label === 'Time to first qualified lead' ? (
-                        <>
-                          {Math.round(count)}
-                          <span className="text-2xl md:text-3xl ml-1">{stat.suffix.trim()}</span>
-                        </>
-                      ) : (
-                        <>
-                          {count.toFixed(1)}{stat.suffix}
-                        </>
-                      )}
-                    </motion.div>
-                  </div>
-                  
-                  <div className="text-body-secondary text-xs font-medium leading-tight text-center px-2 mt-2">
+                  {/* Stat Label */}
+                  <div className="text-white/70 text-sm font-medium leading-tight text-center">
                     {stat.label}
                   </div>
-                  
-                  {/* Progress Bar */}
-                  <motion.div
-                    className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${stat.color} rounded-full`}
-                    initial={{ width: 0 }}
-                    animate={headerVisible ? { width: "100%" } : { width: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1, duration: 1 }}
-                  />
                 </div>
               </motion.div>
             )

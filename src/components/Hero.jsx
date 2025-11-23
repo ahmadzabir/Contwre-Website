@@ -106,7 +106,7 @@ function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="gradient-text-white delay-3 text-lg leading-relaxed text-center mt-6 mb-16 md:mb-24"
+              className="gradient-text-white delay-3 text-lg leading-relaxed text-center mt-6 mb-32 md:mb-48"
             >
               A fully custom strategy for revenue boost, built for your business, no meeting required.
             </motion.p>
