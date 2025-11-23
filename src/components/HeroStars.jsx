@@ -7,13 +7,14 @@ function HeroStars() {
   const scrollYRef = useRef(0)
   const timeRef = useRef(0)
 
-  // Generate stars once - reduced count for performance
+  // Generate stars once - smaller, realistic night sky stars
   useEffect(() => {
     const stars = []
+    // Removed large stars (2-3px), keeping only smaller realistic stars
     const starTypes = [
-      { count: 5, sizeRange: [2, 3], opacityRange: [0.8, 1], color: '#FFFFFF', speedRange: [0.005, 0.01] },
-      { count: 8, sizeRange: [1, 2], opacityRange: [0.6, 0.8], color: '#00FFFF', speedRange: [0.01, 0.02] },
-      { count: 10, sizeRange: [0.5, 1], opacityRange: [0.4, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 12, sizeRange: [0.5, 1], opacityRange: [0.5, 0.8], color: '#FFFFFF', speedRange: [0.01, 0.02] },
+      { count: 15, sizeRange: [0.3, 0.6], opacityRange: [0.3, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 8, sizeRange: [0.4, 0.7], opacityRange: [0.4, 0.7], color: '#E0E0E0', speedRange: [0.015, 0.025] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -83,7 +84,11 @@ function HeroStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       const scrollY = scrollYRef.current
-      const scrollFadeOut = Math.max(0, 1 - scrollY / 300)
+      // Calculate hero section height (min-h-screen = 100vh)
+      const heroHeight = window.innerHeight
+      // Fade out at 80-90% of hero section (use 85% as middle point)
+      const fadeStartPoint = heroHeight * 0.85
+      const scrollFadeOut = Math.max(0, 1 - scrollY / fadeStartPoint)
       
       // Draw stars - simplified calculations
       starsRef.current.forEach((star) => {
