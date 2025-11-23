@@ -31,14 +31,14 @@ function IntegrationFlow() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10">
-            <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white leading-tight mb-6 whitespace-nowrap overflow-x-auto">
+          <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
+            <div className="text-white leading-tight mb-6 whitespace-nowrap" style={{ fontSize: 'clamp(0.875rem, 2.5vw + 0.5rem, 1.875rem)' }}>
               <span className="gradient-text-blue delay-1 font-semibold">Strong Offer</span>
-              <span className="mx-3 text-emerald-400">+</span>
+              <span className="mx-2 sm:mx-3 text-emerald-400">+</span>
               <span className="gradient-text-purple delay-2 font-semibold">Right People</span>
-              <span className="mx-3 text-emerald-400">×</span>
+              <span className="mx-2 sm:mx-3 text-emerald-400">×</span>
               <span className="gradient-text-gold delay-3 font-semibold">Reliable Systems</span>
-              <span className="mx-3 text-emerald-400">=</span>
+              <span className="mx-2 sm:mx-3 text-emerald-400">=</span>
               <span className="gradient-text-emerald delay-4 font-bold">Predictable Revenue</span>
             </div>
             

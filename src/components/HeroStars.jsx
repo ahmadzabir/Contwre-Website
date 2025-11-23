@@ -7,15 +7,13 @@ function HeroStars() {
   const scrollYRef = useRef(0)
   const timeRef = useRef(0)
 
-  // Generate stars once
+  // Generate stars once - reduced count for performance
   useEffect(() => {
     const stars = []
     const starTypes = [
-      { count: 8, sizeRange: [2, 4], opacityRange: [0.8, 1], color: '#FFFFFF', speedRange: [0.005, 0.01] },
-      { count: 12, sizeRange: [1, 2], opacityRange: [0.6, 0.8], color: '#00FFFF', speedRange: [0.01, 0.02] },
-      { count: 15, sizeRange: [0.5, 1], opacityRange: [0.4, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 10, sizeRange: [0.3, 0.6], opacityRange: [0.2, 0.4], color: '#87CEEB', speedRange: [0.03, 0.04] },
-      { count: 5, sizeRange: [0.2, 0.4], opacityRange: [0.1, 0.3], color: '#FFFFFF', speedRange: [0.04, 0.05] },
+      { count: 5, sizeRange: [2, 3], opacityRange: [0.8, 1], color: '#FFFFFF', speedRange: [0.005, 0.01] },
+      { count: 8, sizeRange: [1, 2], opacityRange: [0.6, 0.8], color: '#00FFFF', speedRange: [0.01, 0.02] },
+      { count: 10, sizeRange: [0.5, 1], opacityRange: [0.4, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -67,8 +65,19 @@ function HeroStars() {
     resize()
     window.addEventListener('resize', resize, { passive: true })
 
+    let lastFrameTime = 0
+    const targetFPS = 30 // Reduced to 30fps for better performance
+    const frameInterval = 1000 / targetFPS
+
     const animate = (currentTime) => {
-      timeRef.current = currentTime / 5000
+      // Throttle to 30fps
+      if (currentTime - lastFrameTime < frameInterval) {
+        animationFrameRef.current = requestAnimationFrame(animate)
+        return
+      }
+      lastFrameTime = currentTime
+      
+      timeRef.current = currentTime / 10000 // Slower time progression
       
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -76,61 +85,26 @@ function HeroStars() {
       const scrollY = scrollYRef.current
       const scrollFadeOut = Math.max(0, 1 - scrollY / 300)
       
-      // Draw stars
+      // Draw stars - simplified calculations
       starsRef.current.forEach((star) => {
         const time = timeRef.current * star.speed
         const scrollUpOffset = scrollY * star.scrollUpSpeed
         
-        // Calculate movement
-        let moveX, moveY, driftX, driftY, twinkle
+        // Simplified movement - less calculations
+        const moveX = Math.sin(time + star.baseX * 0.003) * 0.3
+        const moveY = Math.cos(time + star.baseY * 0.003) * 0.3
+        const twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.15 + 0.85
         
-        switch (star.type) {
-          case 0:
-            moveX = Math.sin(time + star.baseX * 0.002) * 0.3
-            moveY = Math.cos(time + star.baseY * 0.002) * 0.3
-            driftX = Math.sin(time * star.driftSpeed + star.baseX * 0.005) * 0.2
-            driftY = Math.cos(time * star.driftSpeed + star.baseY * 0.005) * 0.2
-            twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.1 + 0.9
-            break
-          case 1:
-            moveX = Math.sin(time + star.baseX * 0.003) * 0.4
-            moveY = Math.cos(time + star.baseY * 0.003) * 0.4
-            driftX = Math.sin(time * star.driftSpeed + star.baseX * 0.006) * 0.25
-            driftY = Math.cos(time * star.driftSpeed + star.baseY * 0.006) * 0.25
-            twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.15 + 0.85
-            break
-          case 2:
-            moveX = Math.sin(time + star.baseX * 0.004) * 0.5
-            moveY = Math.cos(time + star.baseY * 0.004) * 0.5
-            driftX = Math.sin(time * star.driftSpeed + star.baseX * 0.007) * 0.3
-            driftY = Math.cos(time * star.driftSpeed + star.baseY * 0.007) * 0.3
-            twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.2 + 0.8
-            break
-          case 3:
-            moveX = Math.sin(time + star.baseX * 0.005) * 0.6
-            moveY = Math.cos(time + star.baseY * 0.005) * 0.6
-            driftX = Math.sin(time * star.driftSpeed + star.baseX * 0.008) * 0.35
-            driftY = Math.cos(time * star.driftSpeed + star.baseY * 0.008) * 0.35
-            twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.25 + 0.75
-            break
-          default:
-            moveX = Math.sin(time + star.baseX * 0.003) * 0.5
-            moveY = Math.cos(time + star.baseY * 0.003) * 0.5
-            driftX = Math.sin(time * star.driftSpeed + star.baseX * 0.008) * 0.3
-            driftY = Math.cos(time * star.driftSpeed + star.baseY * 0.008) * 0.3
-            twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.2 + 0.8
-        }
-        
-        const finalX = ((star.x + moveX + driftX) % 100) * canvas.width / 100
-        const finalY = ((star.y + moveY + driftY - scrollUpOffset) % 100) * canvas.height / 100
+        const finalX = ((star.x + moveX) % 100) * canvas.width / 100
+        const finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
         const finalOpacity = star.opacity * scrollFadeOut * twinkle
         
-        // Draw star
-        ctx.globalAlpha = finalOpacity
-        ctx.fillStyle = star.color
-        ctx.beginPath()
-        ctx.arc(finalX, finalY, star.size, 0, Math.PI * 2)
-        ctx.fill()
+        // Draw star - simplified
+        if (finalOpacity > 0.01) { // Skip very transparent stars
+          ctx.globalAlpha = finalOpacity
+          ctx.fillStyle = star.color
+          ctx.fillRect(finalX - star.size/2, finalY - star.size/2, star.size, star.size)
+        }
       })
       
       ctx.globalAlpha = 1

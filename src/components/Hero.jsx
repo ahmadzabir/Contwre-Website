@@ -30,14 +30,14 @@ function Hero() {
                   className="flex items-center justify-center gap-3 mb-16"
                 >
                   <motion.div
-                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-white/20 text-sm font-medium text-white"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-emerald-400/40 text-sm font-medium gradient-text-emerald"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
                     Founder-led
                   </motion.div>
                   <motion.div
-                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-white/20 text-sm font-medium text-white"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-blue-400/40 text-sm font-medium gradient-text-blue"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
@@ -106,7 +106,7 @@ function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="gradient-text-white delay-3 text-lg leading-relaxed text-center mt-6"
+              className="gradient-text-white delay-3 text-lg leading-relaxed text-center mt-6 mb-16 md:mb-24"
             >
               A fully custom strategy for revenue boost, built for your business, no meeting required.
             </motion.p>
