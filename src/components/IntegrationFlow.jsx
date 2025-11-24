@@ -23,7 +23,7 @@ function IntegrationFlow() {
           </p>
         </motion.div>
 
-        {/* Core Equation - Simplified */}
+        {/* Core Equation - Recoded */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,19 +31,19 @@ function IntegrationFlow() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10 overflow-hidden">
-            <div className="text-white leading-tight mb-6 whitespace-nowrap" style={{ fontSize: 'clamp(0.875rem, 2.5vw + 0.5rem, 1.875rem)' }}>
-              <span className="gradient-text-blue delay-1 font-semibold">Strong Offer</span>
-              <span className="mx-2 sm:mx-3 text-emerald-400">+</span>
-              <span className="gradient-text-purple delay-2 font-semibold">Right People</span>
-              <span className="mx-2 sm:mx-3 text-emerald-400">×</span>
-              <span className="gradient-text-gold delay-3 font-semibold">Reliable Systems</span>
-              <span className="mx-2 sm:mx-3 text-emerald-400">=</span>
-              <span className="gradient-text-emerald delay-4 font-bold">Predictable Revenue</span>
+          <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-6">
+              <span className="gradient-text-blue font-semibold text-lg sm:text-xl md:text-2xl">Strong Offer</span>
+              <span className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-light">+</span>
+              <span className="gradient-text-purple font-semibold text-lg sm:text-xl md:text-2xl">Right People</span>
+              <span className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-light">×</span>
+              <span className="gradient-text-gold font-semibold text-lg sm:text-xl md:text-2xl">Reliable Systems</span>
+              <span className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-light">=</span>
+              <span className="gradient-text-emerald font-bold text-lg sm:text-xl md:text-2xl">Predictable Revenue</span>
             </div>
             
             <p className="text-base text-body-secondary leading-relaxed">
-              When these three elements align, <span className="gradient-text-emerald delay-1 font-semibold">growth isn't luck - it's math.</span>
+              When these three elements align, <span className="gradient-text-emerald font-semibold">growth isn't luck - it's math.</span>
             </p>
           </div>
         </motion.div>

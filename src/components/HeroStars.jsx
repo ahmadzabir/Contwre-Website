@@ -7,14 +7,15 @@ function HeroStars() {
   const scrollYRef = useRef(0)
   const timeRef = useRef(0)
 
-  // Generate stars once - smaller, realistic night sky stars
+  // Generate stars once - visible night sky stars
   useEffect(() => {
     const stars = []
-    // Removed large stars (2-3px), keeping only smaller realistic stars
+    // More stars with better visibility
     const starTypes = [
-      { count: 12, sizeRange: [0.5, 1], opacityRange: [0.5, 0.8], color: '#FFFFFF', speedRange: [0.01, 0.02] },
-      { count: 15, sizeRange: [0.3, 0.6], opacityRange: [0.3, 0.6], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 8, sizeRange: [0.4, 0.7], opacityRange: [0.4, 0.7], color: '#E0E0E0', speedRange: [0.015, 0.025] },
+      { count: 20, sizeRange: [1, 1.5], opacityRange: [0.7, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
+      { count: 30, sizeRange: [0.8, 1.2], opacityRange: [0.6, 0.9], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 25, sizeRange: [0.6, 1], opacityRange: [0.5, 0.8], color: '#E0E0E0', speedRange: [0.015, 0.025] },
+      { count: 15, sizeRange: [0.5, 0.8], opacityRange: [0.4, 0.7], color: '#FFFFFF', speedRange: [0.02, 0.03] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -104,11 +105,15 @@ function HeroStars() {
         const finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
         const finalOpacity = star.opacity * scrollFadeOut * twinkle
         
-        // Draw star - simplified
-        if (finalOpacity > 0.01) { // Skip very transparent stars
+        // Draw star - make more visible
+        if (finalOpacity > 0.05) { // Only skip very transparent stars
           ctx.globalAlpha = finalOpacity
           ctx.fillStyle = star.color
+          // Draw a small glow effect for better visibility
+          ctx.shadowBlur = star.size * 2
+          ctx.shadowColor = star.color
           ctx.fillRect(finalX - star.size/2, finalY - star.size/2, star.size, star.size)
+          ctx.shadowBlur = 0 // Reset shadow
         }
       })
       
