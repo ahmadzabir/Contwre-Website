@@ -107,6 +107,25 @@ body {
     #0a0a0f 75%, 
     #0f1419 100%);
   background-attachment: fixed;
+  position: relative;
+}
+
+/* Subtle sandpaper effect across entire website */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.02) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.02) 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.02) 3px);
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  z-index: 1;
 }
 
 /* Optimize animations for performance */
@@ -424,7 +443,7 @@ a:hover { color: #BFDBFE; }
   overflow: hidden;
 }
 
-/* Futuristic section backgrounds with enhanced contrast and smooth blending */
+/* Futuristic section backgrounds with enhanced seamless blending */
 .section-bg-1 {
   background: 
     radial-gradient(ellipse at 30% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 60%),
@@ -443,18 +462,19 @@ a:hover { color: #BFDBFE; }
   top: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, 
-    rgba(22, 33, 62, 0.8) 0%,
-    rgba(22, 33, 62, 0.5) 40%,
-    rgba(22, 33, 62, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 0%, rgba(22, 33, 62, 0.6) 0%, rgba(22, 33, 62, 0.3) 30%, rgba(22, 33, 62, 0.1) 60%, transparent 100%),
+    linear-gradient(to bottom, 
+      rgba(22, 33, 62, 0.4) 0%,
+      rgba(22, 33, 62, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
 }
 
 .section-bg-1::after {
@@ -463,18 +483,19 @@ a:hover { color: #BFDBFE; }
   bottom: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to top, 
-    rgba(22, 33, 62, 0.8) 0%,
-    rgba(22, 33, 62, 0.5) 40%,
-    rgba(22, 33, 62, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(22, 33, 62, 0.6) 0%, rgba(22, 33, 62, 0.3) 30%, rgba(22, 33, 62, 0.1) 60%, transparent 100%),
+    linear-gradient(to top, 
+      rgba(22, 33, 62, 0.4) 0%,
+      rgba(22, 33, 62, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to top, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
 }
 
 .section-bg-2 {
@@ -492,18 +513,19 @@ a:hover { color: #BFDBFE; }
   top: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, 
-    rgba(10, 10, 15, 0.8) 0%,
-    rgba(10, 10, 15, 0.5) 40%,
-    rgba(10, 10, 15, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 0%, rgba(10, 10, 15, 0.6) 0%, rgba(10, 10, 15, 0.3) 30%, rgba(10, 10, 15, 0.1) 60%, transparent 100%),
+    linear-gradient(to bottom, 
+      rgba(10, 10, 15, 0.4) 0%,
+      rgba(10, 10, 15, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
 }
 
 .section-bg-2::after {
@@ -512,18 +534,19 @@ a:hover { color: #BFDBFE; }
   bottom: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to top, 
-    rgba(10, 10, 15, 0.8) 0%,
-    rgba(10, 10, 15, 0.5) 40%,
-    rgba(10, 10, 15, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(10, 10, 15, 0.6) 0%, rgba(10, 10, 15, 0.3) 30%, rgba(10, 10, 15, 0.1) 60%, transparent 100%),
+    linear-gradient(to top, 
+      rgba(10, 10, 15, 0.4) 0%,
+      rgba(10, 10, 15, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to top, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
 }
 
 .section-bg-3 {
@@ -541,18 +564,19 @@ a:hover { color: #BFDBFE; }
   top: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to bottom, 
-    rgba(22, 33, 62, 0.8) 0%,
-    rgba(22, 33, 62, 0.5) 40%,
-    rgba(22, 33, 62, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 0%, rgba(22, 33, 62, 0.6) 0%, rgba(22, 33, 62, 0.3) 30%, rgba(22, 33, 62, 0.1) 60%, transparent 100%),
+    linear-gradient(to bottom, 
+      rgba(22, 33, 62, 0.4) 0%,
+      rgba(22, 33, 62, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 0%, black 40%, transparent 100%);
 }
 
 .section-bg-3::after {
@@ -561,18 +585,19 @@ a:hover { color: #BFDBFE; }
   bottom: 0;
   left: 0;
   right: 0;
-  height: 200px;
-  background: linear-gradient(to top, 
-    rgba(10, 10, 15, 0.8) 0%,
-    rgba(10, 10, 15, 0.5) 40%,
-    rgba(10, 10, 15, 0.2) 70%,
-    transparent 100%);
+  height: 300px;
+  background: 
+    radial-gradient(ellipse 100% 100% at 50% 100%, rgba(10, 10, 15, 0.6) 0%, rgba(10, 10, 15, 0.3) 30%, rgba(10, 10, 15, 0.1) 60%, transparent 100%),
+    linear-gradient(to top, 
+      rgba(10, 10, 15, 0.4) 0%,
+      rgba(10, 10, 15, 0.2) 50%,
+      transparent 100%);
   pointer-events: none;
   z-index: 1;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  mask-image: linear-gradient(to top, black 0%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 100%, black 0%, black 40%, transparent 100%);
 }
 
 /* Ensure section content is above the blur overlays */

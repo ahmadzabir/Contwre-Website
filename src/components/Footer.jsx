@@ -24,12 +24,46 @@ function Footer() {
   }
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-br from-bgSecondary via-bg to-bgSecondary border-t border-white/20">
+    <footer className="relative overflow-hidden border-t border-white/20" style={{
+      background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E"), linear-gradient(135deg, rgba(5, 8, 15, 0.98), rgba(8, 12, 20, 0.95))`,
+      position: 'relative',
+      overflow: 'hidden',
+      border: 'none',
+      outline: 'none',
+      boxShadow: 'none'
+    }}>
+      {/* Dark overlay for additional depth */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.3)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
+      {/* Sandpaper texture overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `
+          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.05) 3px),
+          repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.05) 3px)
+        `,
+        pointerEvents: 'none',
+        opacity: 0.7,
+        mixBlendMode: 'overlay',
+        zIndex: 1
+      }} />
       {/* Enhanced Top Border */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue to-mint to-transparent opacity-60" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue to-mint to-transparent opacity-60 z-10" />
       
-      <div className="section-spacing px-5">
-        <div className="w-full max-w-7xl mx-auto">
+      <div className="section-spacing px-5 relative z-10">
+        <div className="w-full max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
             {/* Left Column - Brand, CTA, Certifications, Clients */}
             <motion.div

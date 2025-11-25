@@ -6,6 +6,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const scrollPositionRef = useRef(0)
+  const iframeContainerRef = useRef(null)
+  const iframeRef = useRef(null)
+  const [scaleFactor, setScaleFactor] = useState(1)
 
   // Debug logging
   useEffect(() => {
@@ -112,6 +115,104 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     onSubmit(answers)
     onClose()
   }
+
+  // Calculate iframe scale to fit container based on actual dimensions
+  useEffect(() => {
+    if (currentStep >= questions.length && iframeContainerRef.current) {
+      const calculateScale = () => {
+        const container = iframeContainerRef.current
+        const iframe = iframeRef.current
+        if (!container || !iframe) return
+
+        // Get container dimensions (available space)
+        const containerRect = container.getBoundingClientRect()
+        const availableWidth = containerRect.width
+        const availableHeight = containerRect.height
+
+        // Try to get actual iframe content dimensions
+        // For cross-origin iframes, we can't access contentDocument, so we'll use a standard size
+        // Most booking widgets are around 1000-1200px wide and 700-900px tall
+        // Based on typical LeadConnector booking widgets, they're usually ~1100x750
+        let iframeNaturalWidth = 1100
+        let iframeNaturalHeight = 750
+
+        // Try to access iframe dimensions if same-origin (unlikely but worth trying)
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+          if (iframeDoc) {
+            const body = iframeDoc.body
+            if (body) {
+              iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1100)
+              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 750)
+            }
+          }
+        } catch (e) {
+          // Cross-origin - use default dimensions
+          // LeadConnector booking widgets are typically 1100x750
+          iframeNaturalWidth = 1100
+          iframeNaturalHeight = 750
+        }
+
+        // Calculate scale factors for both dimensions
+        const scaleX = availableWidth / iframeNaturalWidth
+        const scaleY = availableHeight / iframeNaturalHeight
+
+        // Use the smaller scale to ensure it fits in both dimensions
+        // Add small padding (0.95) to ensure no overflow
+        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.95
+
+        setScaleFactor(Math.max(calculatedScale, 0.5)) // Minimum scale of 0.5 to prevent too small
+      }
+
+      // Calculate on mount
+      const timeoutId = setTimeout(() => {
+        calculateScale()
+      }, 100)
+
+      // Recalculate on window resize
+      const resizeObserver = new ResizeObserver(() => {
+        calculateScale()
+      })
+      
+      if (iframeContainerRef.current) {
+        resizeObserver.observe(iframeContainerRef.current)
+      }
+
+      // Also listen to window resize as fallback
+      window.addEventListener('resize', calculateScale)
+
+      // Try to measure iframe after it loads
+      const iframe = iframeRef.current
+      if (iframe) {
+        const handleLoad = () => {
+          // Wait for content to fully render
+          setTimeout(() => {
+            calculateScale()
+          }, 1000)
+        }
+        iframe.addEventListener('load', handleLoad)
+        
+        // Also try after a delay in case load event doesn't fire
+        const delayedCheck = setTimeout(() => {
+          calculateScale()
+        }, 2000)
+        
+        return () => {
+          clearTimeout(timeoutId)
+          clearTimeout(delayedCheck)
+          resizeObserver.disconnect()
+          window.removeEventListener('resize', calculateScale)
+          iframe.removeEventListener('load', handleLoad)
+        }
+      }
+
+      return () => {
+        clearTimeout(timeoutId)
+        resizeObserver.disconnect()
+        window.removeEventListener('resize', calculateScale)
+      }
+    }
+  }, [currentStep, questions.length])
 
   if (!isOpen) return null
 
@@ -278,38 +379,41 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   </h2>
                 </div>
 
-                <div className="flex-1 w-full rounded-xl overflow-hidden border border-white/10" style={{ 
-                  minHeight: 0, 
-                  flex: '1 1 0%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: 'calc(100% - 60px)', // Reserve space for header and button
-                  position: 'relative',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  overflow: 'hidden'
-                }}>
+                <div 
+                  ref={iframeContainerRef}
+                  className="flex-1 w-full rounded-xl overflow-hidden border border-white/10" 
+                  style={{ 
+                    minHeight: 0, 
+                    flex: '1 1 0%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'calc(100% - 60px)', // Reserve space for header and button
+                    position: 'relative',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden'
+                  }}
+                >
                   <div style={{
-                    width: '100%',
-                    height: '100%',
-                    transform: 'scale(0.8)',
-                    transformOrigin: 'top center',
+                    width: '1100px', // Natural iframe width (typical LeadConnector booking widget)
+                    height: '750px', // Natural iframe height (typical LeadConnector booking widget)
+                    transform: `scale(${scaleFactor})`,
+                    transformOrigin: 'center center',
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'visible'
                   }}>
                     <iframe
+                      ref={iframeRef}
                       src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                       style={{ 
-                        width: '125%', // Compensate for scale (100% / 0.8 = 125%)
-                        height: '125%', // Compensate for scale (100% / 0.8 = 125%)
+                        width: '1100px',
+                        height: '750px',
                         border: 'none', 
                         display: 'block',
                         flex: '1 1 0%',
                         minHeight: 0,
-                        overflow: 'hidden',
-                        marginLeft: '-12.5%', // Center the scaled iframe
-                        marginTop: '0'
+                        overflow: 'hidden'
                       }}
                       scrolling="no"
                       id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
