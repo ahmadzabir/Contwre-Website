@@ -6,6 +6,9 @@ function HeroStars() {
   const starsRef = useRef([])
   const scrollYRef = useRef(0)
   const timeRef = useRef(0)
+  const heroHeightRef = useRef(0)
+  const section2TopRef = useRef(0)
+  const section2HeightRef = useRef(0)
 
   // Generate stars once - visible night sky stars
   useEffect(() => {
@@ -46,13 +49,41 @@ function HeroStars() {
     starsRef.current = stars
   }, [])
 
+  // Update section measurements on scroll/resize
+  const updateSectionMeasurements = () => {
+    const heroSection = document.getElementById('top')
+    heroHeightRef.current = heroSection ? heroSection.offsetHeight : window.innerHeight
+    
+    const section2 = document.querySelector('.section-bg-1')
+    if (section2) {
+      const rect = section2.getBoundingClientRect()
+      section2TopRef.current = rect.top + window.scrollY
+      section2HeightRef.current = section2.offsetHeight
+    } else {
+      section2TopRef.current = heroHeightRef.current * 2
+      section2HeightRef.current = window.innerHeight
+    }
+  }
+
   // Handle scroll - store in ref, no re-renders
   useEffect(() => {
+    // Initial measurement
+    updateSectionMeasurements()
+    
     const handleScroll = () => {
       scrollYRef.current = window.scrollY
+      // Update measurements less frequently (every 100ms)
+      if (!handleScroll.lastUpdate || Date.now() - handleScroll.lastUpdate > 100) {
+        updateSectionMeasurements()
+        handleScroll.lastUpdate = Date.now()
+      }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('resize', updateSectionMeasurements, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', updateSectionMeasurements)
+    }
   }, [])
 
   // Canvas animation loop - smooth like video
@@ -87,15 +118,9 @@ function HeroStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       const scrollY = scrollYRef.current
-      
-      // Get actual hero section height (could be more than 100vh due to content)
-      const heroSection = document.getElementById('top')
-      const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight
-      
-      // Get section 2 (ProofTrustBar) position
-      const section2 = document.querySelector('.section-bg-1')
-      const section2Top = section2 ? section2.getBoundingClientRect().top + scrollY : heroHeight * 2
-      const section2Height = section2 ? section2.offsetHeight : window.innerHeight
+      const heroHeight = heroHeightRef.current
+      const section2Top = section2TopRef.current
+      const section2Height = section2HeightRef.current
       
       // Fade out at 90% of hero section scroll
       const fadeOutStart = heroHeight * 0.90
@@ -112,18 +137,18 @@ function HeroStars() {
       } else {
         // Past hero section - check if we should fade in from behind section 2
         const section2Bottom = section2Top + section2Height
-        const viewportBottom = scrollY + window.innerHeight
         
         // Fade in stars when section 2 is 90% visible (10% of section 2 is above viewport)
+        // Stars start appearing when section 2 is 10% visible
         const fadeInStart = section2Top + (section2Height * 0.1)
-        const fadeInEnd = section2Bottom - (section2Height * 0.1)
+        const fadeInEnd = section2Top + (section2Height * 0.9)
         
         if (scrollY >= fadeInStart && scrollY < fadeInEnd) {
           // Fading in as section 2 becomes visible
           const fadeProgress = (scrollY - fadeInStart) / (fadeInEnd - fadeInStart)
           scrollFadeOut = Math.min(fadeProgress, 1)
         } else if (scrollY >= fadeInEnd) {
-          // Section 2 is fully visible - stars fully visible
+          // Section 2 is 90% visible - stars fully visible
           scrollFadeOut = 1
         } else {
           // Between hero end and section 2 fade in - stars hidden
