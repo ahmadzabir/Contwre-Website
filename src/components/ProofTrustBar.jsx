@@ -18,10 +18,24 @@ function ProofTrustBar() {
 
   return (
     <section className="relative overflow-hidden w-full py-8 md:py-12" style={{
-      background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E"), linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))`,
+      background: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E"), linear-gradient(135deg, rgba(5, 8, 15, 0.98), rgba(8, 12, 20, 0.95))`,
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      border: 'none',
+      outline: 'none',
+      boxShadow: 'none'
     }}>
+      {/* Dark overlay for additional darkness */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.3)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />
       {/* Sandpaper texture overlay */}
       <div style={{
         position: 'absolute',
@@ -30,16 +44,16 @@ function ProofTrustBar() {
         right: 0,
         bottom: 0,
         background: `
-          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.03) 3px),
-          repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.03) 3px)
+          repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.05) 3px),
+          repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.05) 0px, transparent 1px, transparent 2px, rgba(0, 0, 0, 0.05) 3px)
         `,
         pointerEvents: 'none',
-        opacity: 0.6,
+        opacity: 0.7,
         mixBlendMode: 'overlay',
-        zIndex: 0
+        zIndex: 1
       }} />
       {/* Section Header */}
-      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-6 md:mb-8" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-6 md:mb-8" style={{ position: 'relative', zIndex: 2 }}>
         <div className="text-center">
           <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-light tracking-wider uppercase gradient-text-white px-2" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '0.15em', fontWeight: 300 }}>
             Trusted by founders who scale
@@ -48,7 +62,7 @@ function ProofTrustBar() {
       </div>
 
       {/* Truly Infinite Scrolling Logo Carousel */}
-      <div className="relative w-full overflow-hidden py-4 md:py-6 carousel-container pointer-events-none select-none" style={{ position: 'relative', zIndex: 1 }}>
+      <div className="relative w-full overflow-hidden py-4 md:py-6 carousel-container pointer-events-none select-none" style={{ position: 'relative', zIndex: 2 }}>
         <motion.div 
           className="carousel-track"
           initial={{ opacity: 1 }}

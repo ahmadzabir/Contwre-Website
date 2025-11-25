@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
@@ -107,9 +108,16 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     onClose()
   }
 
-  if (!isOpen) return null
+  const [mounted, setMounted] = useState(false)
 
-  return (
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
+
+  if (!isOpen || !mounted) return null
+
+  const modalContent = (
     <AnimatePresence mode="wait">
       {isOpen && (
       <div 
@@ -125,11 +133,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           justifyContent: 'center',
           overflow: 'hidden',
           overscrollBehavior: 'contain',
-          zIndex: 99999
+          zIndex: 99999,
+          pointerEvents: 'auto'
         }}
-        onScroll={(e) => e.preventDefault()}
-        onWheel={(e) => e.preventDefault()}
-        onTouchMove={(e) => e.preventDefault()}
       >
         {/* Backdrop */}
         <motion.div
@@ -145,11 +151,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             right: 0, 
             bottom: 0, 
             zIndex: 99998,
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
+            pointerEvents: 'auto'
           }}
-          onScroll={(e) => e.preventDefault()}
-          onWheel={(e) => e.preventDefault()}
-          onTouchMove={(e) => e.preventDefault()}
         />
 
         {/* Modal */}
@@ -169,7 +173,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             zIndex: 99999,
             margin: 'auto',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            pointerEvents: 'auto',
+            visibility: 'visible'
           }}
         >
           {/* Close Button */}
@@ -307,6 +313,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
       )}
     </AnimatePresence>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default QualifyingModal

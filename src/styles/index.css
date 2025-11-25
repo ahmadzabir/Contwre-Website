@@ -424,7 +424,7 @@ a:hover { color: #BFDBFE; }
   overflow: hidden;
 }
 
-/* Futuristic section backgrounds with enhanced contrast */
+/* Futuristic section backgrounds with enhanced contrast and smooth blending */
 .section-bg-1 {
   background: 
     radial-gradient(ellipse at 30% 30%, rgba(0, 255, 255, 0.08) 0%, transparent 60%),
@@ -432,6 +432,49 @@ a:hover { color: #BFDBFE; }
     linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(26, 26, 46, 0.9) 100%);
   position: relative;
   overflow: hidden;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.section-bg-1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, 
+    rgba(22, 33, 62, 0.8) 0%,
+    rgba(22, 33, 62, 0.5) 40%,
+    rgba(22, 33, 62, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.section-bg-1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to top, 
+    rgba(22, 33, 62, 0.8) 0%,
+    rgba(22, 33, 62, 0.5) 40%,
+    rgba(22, 33, 62, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
 }
 
 .section-bg-2 {
@@ -443,6 +486,46 @@ a:hover { color: #BFDBFE; }
   overflow: hidden;
 }
 
+.section-bg-2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, 
+    rgba(10, 10, 15, 0.8) 0%,
+    rgba(10, 10, 15, 0.5) 40%,
+    rgba(10, 10, 15, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.section-bg-2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to top, 
+    rgba(10, 10, 15, 0.8) 0%,
+    rgba(10, 10, 15, 0.5) 40%,
+    rgba(10, 10, 15, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+}
+
 .section-bg-3 {
   background: 
     radial-gradient(ellipse at 50% 50%, rgba(0, 255, 255, 0.06) 0%, transparent 60%),
@@ -450,6 +533,54 @@ a:hover { color: #BFDBFE; }
     linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(26, 26, 46, 0.9) 100%);
   position: relative;
   overflow: hidden;
+}
+
+.section-bg-3::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, 
+    rgba(22, 33, 62, 0.8) 0%,
+    rgba(22, 33, 62, 0.5) 40%,
+    rgba(22, 33, 62, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
+
+.section-bg-3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(to top, 
+    rgba(10, 10, 15, 0.8) 0%,
+    rgba(10, 10, 15, 0.5) 40%,
+    rgba(10, 10, 15, 0.2) 70%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  mask-image: linear-gradient(to top, black 0%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 0%, transparent 100%);
+}
+
+/* Ensure section content is above the blur overlays */
+.section-bg-1 > *,
+.section-bg-2 > *,
+.section-bg-3 > * {
+  position: relative;
+  z-index: 2;
 }
 
 /* Futuristic gradient text with enhanced contrast */

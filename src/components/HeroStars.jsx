@@ -155,7 +155,16 @@ function HeroStars() {
       // Calculate scroll progress through hero section (0 to 1)
       const scrollProgressInHero = (scrollY - heroTop) / heroHeight
       
-      // Fade out at 90% of hero section scroll
+      // Calculate section 2 visibility to ensure no gap
+      const section2Bottom = section2Top + section2Height
+      const viewportTop = scrollY
+      const viewportBottom = scrollY + window.innerHeight
+      const section2VisibleTop = Math.max(viewportTop, section2Top)
+      const section2VisibleBottom = Math.min(viewportBottom, section2Bottom)
+      const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+      const section2Visibility = section2VisibleHeight / section2Height
+      
+      // Fade out at 90% of hero section scroll, but ensure smooth transition
       const fadeOutStart = 0.90
       const fadeOutEnd = 1.0
       
@@ -167,32 +176,31 @@ function HeroStars() {
         scrollFadeOut = 1
       } else if (scrollProgressInHero >= fadeOutStart && scrollProgressInHero < fadeOutEnd) {
         // Fading out between 90% and 100% of hero
+        // But also check if section 2 stars are starting to appear - blend them
         const fadeProgress = (scrollProgressInHero - fadeOutStart) / (fadeOutEnd - fadeOutStart)
-        scrollFadeOut = 1 - fadeProgress
+        
+        // If section 2 is becoming visible, start fading in those stars while fading out hero stars
+        // This ensures no gap - stars from section 2 start appearing as hero stars fade
+        if (section2Visibility > 0.05) {
+          // Section 2 stars are starting to appear - blend the two
+          const section2FadeIn = Math.min(1, (section2Visibility - 0.05) / 0.35) // Fade from 5% to 40%
+          // Keep some hero stars visible while section 2 stars fade in
+          scrollFadeOut = Math.max(1 - fadeProgress, section2FadeIn * 0.3) // Keep at least 30% if section 2 stars are visible
+        } else {
+          // Section 2 not visible yet - normal fade out
+          scrollFadeOut = 1 - fadeProgress
+        }
       } else {
-        // Past hero section - check if we should fade in from behind section 2
-        const section2Bottom = section2Top + section2Height
-        
-        // Calculate how much of section 2 is visible in viewport
-        const viewportTop = scrollY
-        const viewportBottom = scrollY + window.innerHeight
-        
-        // Stars start appearing when section 2 is 10% visible (90% still above viewport)
-        // Stars fully visible when section 2 is 90% visible (10% still above viewport)
-        const section2VisibleTop = Math.max(viewportTop, section2Top)
-        const section2VisibleBottom = Math.min(viewportBottom, section2Bottom)
-        const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
-        const section2Visibility = section2VisibleHeight / section2Height
-        
-        if (section2Visibility < 0.1) {
-          // Section 2 less than 10% visible - stars hidden
+        // Past hero section - use section 2 visibility for fade
+        if (section2Visibility < 0.05) {
+          // Section 2 less than 5% visible - stars hidden
           scrollFadeOut = 0
-        } else if (section2Visibility >= 0.1 && section2Visibility < 0.9) {
-          // Section 2 between 10% and 90% visible - fade in stars
-          const fadeProgress = (section2Visibility - 0.1) / 0.8 // Normalize to 0-1
+        } else if (section2Visibility >= 0.05 && section2Visibility < 0.4) {
+          // Section 2 between 5% and 40% visible - fade in stars
+          const fadeProgress = (section2Visibility - 0.05) / 0.35 // Normalize to 0-1
           scrollFadeOut = fadeProgress
         } else {
-          // Section 2 is 90%+ visible - stars fully visible
+          // Section 2 is 40%+ visible - stars fully visible
           scrollFadeOut = 1
         }
       }
@@ -239,8 +247,8 @@ function HeroStars() {
           const section2VisibleBottom = Math.min(viewportBottom, section2Bottom)
           const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
           
-          // Stars appear when section 2 is at least 5% visible
-          if (section2VisibleHeight > section2Height * 0.05) {
+          // Stars appear when section 2 is at least 2% visible (earlier to prevent gap)
+          if (section2VisibleHeight > section2Height * 0.02) {
             // Calculate how much we've scrolled past section 2's top
             const scrollPastSection2Top = Math.max(0, scrollY - section2Top)
             
@@ -277,10 +285,10 @@ function HeroStars() {
               // Calculate section 2 visibility for fade-in effect
               const section2Visibility = section2VisibleHeight / section2Height
               
-              // Fade in from 5% to 40% visibility of section 2
+              // Fade in from 2% to 40% visibility of section 2 (earlier to prevent gap)
               let fadeIn = 0
-              if (section2Visibility >= 0.05) {
-                fadeIn = Math.min(1, (section2Visibility - 0.05) / 0.35) // Fade from 5% to 40%
+              if (section2Visibility >= 0.02) {
+                fadeIn = Math.min(1, (section2Visibility - 0.02) / 0.38) // Fade from 2% to 40%
               }
               
               // Fade out as stars reach top of viewport
