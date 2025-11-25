@@ -109,9 +109,9 @@ function Footer() {
               </div>
 
               {/* Founder Section */}
-              <div className="card-glass rounded-2xl p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-400/30">
+              <div className="card-glass rounded-xl sm:rounded-2xl p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400/30 flex-shrink-0">
                     <img 
                       src="/assets/founder-together.jpg" 
                       alt="Ahmad & Zahra"
@@ -119,9 +119,9 @@ function Footer() {
                     />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold text-lg">Founder-led by Ahmad & Zahra</h3>
-                    <p className="text-body-secondary text-sm">8+ years building and scaling sales systems across industries.</p>
-                    <p className="text-body-secondary text-sm">Fractional GTM consultant and co-founder of Contwre.</p>
+                    <h3 className="text-white font-semibold text-sm sm:text-base md:text-lg">Founder-led by Ahmad & Zahra</h3>
+                    <p className="text-body-secondary text-xs sm:text-sm">8+ years building and scaling sales systems across industries.</p>
+                    <p className="text-body-secondary text-xs sm:text-sm">Fractional GTM consultant and co-founder of Contwre.</p>
                   </div>
                 </div>
               </div>
@@ -137,7 +137,7 @@ function Footer() {
             >
               {/* Company Description */}
               <div>
-                <p className="text-lg text-body-secondary leading-relaxed mb-8">
+                <p className="text-sm sm:text-base md:text-lg text-body-secondary leading-relaxed mb-6 sm:mb-8">
                   Pakistan's first founder-led, full-service GTM enablement agency. 
                   We design and run end-to-end acquisition systems: outbound, performance marketing, 
                   and sales enablement - anything that gets you to money.

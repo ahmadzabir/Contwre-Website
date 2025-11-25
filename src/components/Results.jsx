@@ -123,7 +123,7 @@ function Results() {
           </motion.p>
           
                 <motion.h2 
-                  className="text-5xl md:text-6xl font-bold leading-tight tracking-[-0.02em] mb-8"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-[-0.02em] mb-6 sm:mb-8 px-2"
                   initial={{ opacity: 0, y: 20 }}
                   animate={headerVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                   transition={{ delay: 0.3, duration: 0.7 }}
@@ -134,7 +134,7 @@ function Results() {
         </motion.div>
 
         {/* Stats Grid - Recoded from scratch */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-12 md:mb-16">
           {stats.map((stat, index) => {
             const count = useCounterAnimation(stat.value, headerVisible, 2000)
             
@@ -147,10 +147,10 @@ function Results() {
                 viewport={{ once: true }}
                 className="relative"
               >
-                <div className="card-glass p-8 text-center h-full flex flex-col items-center justify-start">
+                <div className="card-glass p-4 sm:p-6 md:p-8 text-center h-full flex flex-col items-center justify-start">
                   {/* Stat Value */}
                   <motion.div 
-                    className="text-5xl md:text-6xl font-bold text-white mb-4 font-mono"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 sm:mb-3 md:mb-4 font-mono"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
@@ -159,7 +159,7 @@ function Results() {
                     {stat.label === 'Time to first qualified lead' ? (
                       <>
                         {Math.round(count)}
-                        <span className="text-3xl md:text-4xl ml-1">{stat.suffix.trim()}</span>
+                        <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl ml-1">{stat.suffix.trim()}</span>
                       </>
                     ) : (
                       <>
@@ -169,7 +169,7 @@ function Results() {
                   </motion.div>
                   
                   {/* Stat Label */}
-                  <div className="text-white/70 text-sm font-medium leading-tight text-center">
+                  <div className="text-white/70 text-xs sm:text-sm font-medium leading-tight text-center">
                     {stat.label}
                   </div>
                 </div>
@@ -196,11 +196,11 @@ function Results() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="card-glass p-10 relative overflow-hidden"
+                className="card-glass p-6 sm:p-8 md:p-10 relative overflow-hidden"
               >
                 
                 <motion.blockquote 
-                  className="text-white text-xl leading-relaxed mb-8 relative z-10 font-light"
+                  className="text-white text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed mb-6 sm:mb-8 relative z-10 font-light"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2, duration: 0.6 }}
@@ -208,10 +208,10 @@ function Results() {
                   "{testimonials[currentTestimonial].quote}"
                 </motion.blockquote>
                 
-                <div className="border-t border-white/10 pt-6 content-spacing relative z-10">
-                  <div className="flex items-center justify-between content-spacing">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-emerald-400/30">
+                <div className="border-t border-white/10 pt-4 sm:pt-6 content-spacing relative z-10">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between content-spacing gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-emerald-400/30 flex-shrink-0">
                         <img 
                           src={testimonials[currentTestimonial].profileImage} 
                           alt={testimonials[currentTestimonial].author}
@@ -249,7 +249,7 @@ function Results() {
                   
                   <div className="space-y-4">
                     <motion.div 
-                      className="inline-block px-4 py-2 bg-gradient-to-r from-emerald-500/20 to-teal-400/20 text-emerald-400 text-sm rounded-full border border-emerald-400/30"
+                      className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-emerald-500/20 to-teal-400/20 text-emerald-400 text-xs sm:text-sm rounded-full border border-emerald-400/30"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
@@ -316,7 +316,7 @@ function Results() {
             {/* Next Button */}
             <motion.button
               onClick={nextTestimonial}
-              className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-150"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all duration-150"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >

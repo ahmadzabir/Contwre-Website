@@ -145,7 +145,7 @@ function Hero() {
       {/* Hero Stars with scroll animation */}
       <HeroStars />
       
-      <div className="relative z-10 w-full max-w-7xl mx-auto container-padding py-8">
+      <div className="relative z-10 w-full max-w-7xl mx-auto container-padding py-4 sm:py-6 md:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -157,7 +157,7 @@ function Hero() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[0.9] tracking-[-0.02em] mb-6 md:mb-8"
+                  className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight sm:leading-[0.9] tracking-[-0.02em] mb-4 sm:mb-6 md:mb-8 px-2"
                 >
                   <span className="gradient-text-blue delay-1">The only GTM agency that cares about one thing…</span>
                   <br />
@@ -177,7 +177,7 @@ function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.7 }}
-            className="text-base sm:text-lg md:text-xl text-body-secondary max-w-4xl mx-auto mb-6 md:mb-8 leading-relaxed"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-body-secondary max-w-4xl mx-auto mb-4 sm:mb-6 md:mb-8 leading-relaxed px-2"
           >
             We design and run end-to-end acquisition systems: outbound, performance marketing, and sales enablement.
           </motion.p>
@@ -189,14 +189,14 @@ function Hero() {
             transition={{ delay: 0.7, duration: 0.8 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10 shadow-2xl">
+            <div className="bg-white/5 backdrop-blur-lg rounded-xl sm:rounded-2xl p-2 border border-white/10 shadow-2xl">
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your work email here and..."
-                  className="flex-1 px-6 py-4 bg-white text-gray-800 placeholder-gray-500 focus:outline-none text-lg rounded-xl border-0"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-white text-gray-800 placeholder-gray-500 focus:outline-none text-base sm:text-lg rounded-lg sm:rounded-xl border-0"
                   required
                   disabled={isSubmitting}
                 />
@@ -235,7 +235,7 @@ function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
-              className="gradient-text-white delay-3 text-lg leading-relaxed text-center mt-4 mb-0"
+              className="gradient-text-white delay-3 text-sm sm:text-base md:text-lg leading-relaxed text-center mt-3 sm:mt-4 mb-0 px-2"
             >
               A fully custom strategy for revenue boost, built for your business, no meeting required.
             </motion.p>

@@ -53,13 +53,13 @@ function Process() {
           viewport={{ once: true }}
           className="mb-20 text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 tracking-[-0.02em]">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight mb-4 sm:mb-6 tracking-[-0.02em] px-2">
             <span className="gradient-text-white">The Contwre Process - </span>
             <span className="gradient-text-emerald">From Dependency to Enablement</span>
           </h2>
           
           <motion.p 
-            className="text-2xl md:text-3xl font-semibold text-white mb-8 leading-relaxed"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-white mb-6 sm:mb-8 leading-relaxed px-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
@@ -70,7 +70,7 @@ function Process() {
         </motion.div>
 
         {/* Process Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12 md:mb-16">
           {processSteps.map((step, index) => (
             <motion.div
               key={index}
@@ -80,18 +80,18 @@ function Process() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="card-glass p-8 text-center relative overflow-hidden h-full flex flex-col">
+              <div className="card-glass p-4 sm:p-6 md:p-8 text-center relative overflow-hidden h-full flex flex-col">
                 {/* Icon */}
-                <div className="text-emerald-400 mb-6 flex justify-center">
+                <div className="text-emerald-400 mb-4 sm:mb-6 flex justify-center text-3xl sm:text-4xl md:text-5xl">
                   {step.icon}
                 </div>
                 
                 {/* Content */}
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <h3 className="text-xl font-bold text-white mb-4 gradient-text-emerald">
+                  <h3 className="text-base sm:text-lg md:text-xl font-bold text-white mb-3 sm:mb-4 gradient-text-emerald">
                     {step.title}
                   </h3>
-                  <p className="text-body-secondary text-sm leading-relaxed flex-1">
+                  <p className="text-body-secondary text-xs sm:text-sm leading-relaxed flex-1">
                     {step.description}
                   </p>
                 </div>
@@ -110,46 +110,46 @@ function Process() {
         >
           <div className="card-glass rounded-3xl p-8 relative overflow-hidden">
             <div className="relative z-10">
-              <h3 className="text-2xl font-bold text-white mb-6 text-center gradient-text-emerald">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6 text-center gradient-text-emerald">
                 Our Complete Process
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5 sm:mt-1">
                       1
                     </div>
-                    <p className="text-body-secondary">
+                    <p className="text-xs sm:text-sm text-body-secondary leading-relaxed">
                       <span className="font-semibold text-white">Embed & Engineer:</span> We embed inside your business and engineer a revenue system around your ICP and offer.
                     </p>
                   </div>
                   
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5 sm:mt-1">
                       2
                     </div>
-                    <p className="text-body-secondary">
+                    <p className="text-xs sm:text-sm text-body-secondary leading-relaxed">
                       <span className="font-semibold text-white">Train & Enable:</span> We train and enable your team to run the system independently.
                     </p>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5 sm:mt-1">
                       3
                     </div>
-                    <p className="text-body-secondary">
+                    <p className="text-xs sm:text-sm text-body-secondary leading-relaxed">
                       <span className="font-semibold text-white">Align & Fix:</span> We align sales and marketing, fix broken systems, and hire or replace where needed.
                     </p>
                   </div>
                   
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-1">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5 sm:mt-1">
                       4
                     </div>
-                    <p className="text-body-secondary">
+                    <p className="text-xs sm:text-sm text-body-secondary leading-relaxed">
                       <span className="font-semibold text-white">Hand Back:</span> We hand back a GTM engine that compounds without us.
                     </p>
                   </div>

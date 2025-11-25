@@ -92,7 +92,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           left: 0, 
           right: 0, 
           bottom: 0,
-          overflowY: 'auto'
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden'
         }}
       >
         {/* Backdrop */}
@@ -111,20 +114,22 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative card-glass rounded-3xl shadow-2xl max-w-3xl w-full my-auto border border-white/10"
+          className="relative card-glass rounded-3xl shadow-2xl max-w-3xl w-full border border-white/10 flex flex-col"
           style={{ 
             maxHeight: '90vh', 
-            overflowY: 'auto',
+            height: '90vh',
+            overflow: 'hidden',
             position: 'relative',
             zIndex: 2,
-            marginTop: 'auto',
-            marginBottom: 'auto'
+            margin: 'auto',
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-10 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10"
+            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-10 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -132,21 +137,21 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             </svg>
           </button>
 
-          <div className="p-6 md:p-8 lg:p-10">
+          <div className="p-6 md:p-8 lg:p-10 flex-1 flex flex-col overflow-hidden">
             {/* Progress Indicator */}
             {currentStep < questions.length && (
-              <div className="mb-10">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm text-body-secondary font-medium">
+              <div className="mb-6 flex-shrink-0">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs md:text-sm text-body-secondary font-medium">
                     Question {currentStep + 1} of {questions.length}
                   </span>
-                  <span className="text-sm gradient-text-emerald font-semibold">
+                  <span className="text-xs md:text-sm gradient-text-emerald font-semibold truncate max-w-[200px]">
                     {email}
                   </span>
                 </div>
-                <div className="w-full bg-white/5 rounded-full h-2.5 border border-white/10">
+                <div className="w-full bg-white/5 rounded-full h-2 border border-white/10">
                   <motion.div
-                    className="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 h-2.5 rounded-full"
+                    className="bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500 h-2 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${((currentStep + 1) / questions.length) * 100}%` }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
@@ -162,18 +167,18 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6 w-full"
+                className="flex-1 flex flex-col overflow-hidden min-h-0"
               >
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold gradient-text-white mb-8 leading-tight">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold gradient-text-white mb-6 leading-tight flex-shrink-0">
                   {questions[currentStep].question}
                 </h2>
 
-                <div className="space-y-3 md:space-y-4">
+                <div className="flex-1 overflow-y-auto space-y-2 md:space-y-3 pr-2">
                   {questions[currentStep].options.map((option) => (
                     <motion.button
                       key={option.value}
                       onClick={() => handleAnswer(questions[currentStep].id, option.value)}
-                      className={`w-full p-4 md:p-5 text-left rounded-2xl border transition-all duration-300 relative overflow-hidden ${
+                      className={`w-full p-3 md:p-4 text-left rounded-xl border transition-all duration-300 relative overflow-hidden flex-shrink-0 ${
                         answers[questions[currentStep].id] === option.value
                           ? 'border-emerald-400/50 bg-emerald-400/10 text-white card-glass'
                           : 'border-white/10 bg-white/5 text-body-secondary hover:border-emerald-400/30 hover:bg-white/10 card-glass'
@@ -188,7 +193,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                           animate={{ opacity: 1 }}
                         />
                       )}
-                      <span className="font-semibold text-sm md:text-base relative z-10 block">{option.label}</span>
+                      <span className="font-semibold text-sm md:text-base relative z-10 block break-words">{option.label}</span>
                     </motion.button>
                   ))}
                 </div>
@@ -200,26 +205,26 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
+                className="flex-1 flex flex-col overflow-hidden min-h-0"
               >
-                <div className="text-center mb-8">
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold gradient-text-emerald mb-4 leading-tight">
+                <div className="text-center mb-4 flex-shrink-0">
+                  <h2 className="text-lg md:text-xl lg:text-2xl font-bold gradient-text-emerald mb-2 leading-tight">
                     Schedule Your Strategy Call
                   </h2>
-                  <p className="text-body-secondary text-base md:text-lg">
+                  <p className="text-body-secondary text-sm md:text-base">
                     Book a time that works for you. We'll discuss your GTM challenges and how we can help.
                   </p>
                 </div>
 
-                <div className="card-glass rounded-2xl p-4 md:p-6 overflow-hidden border border-white/10">
-                  <div className="w-full" style={{ minHeight: '600px', position: 'relative' }}>
+                <div className="flex-1 min-h-0 card-glass rounded-2xl p-3 md:p-4 overflow-hidden border border-white/10 flex flex-col">
+                  <div className="flex-1 min-h-0 w-full" style={{ position: 'relative' }}>
                     <iframe
                       src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                       style={{ 
                         width: '100%', 
+                        height: '100%',
                         border: 'none', 
                         overflow: 'hidden',
-                        minHeight: '600px',
                         display: 'block'
                       }}
                       scrolling="yes"
@@ -229,10 +234,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   </div>
                 </div>
 
-                <div className="flex justify-center pt-6">
+                <div className="flex justify-center pt-4 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20"
+                    className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-sm md:text-base"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >

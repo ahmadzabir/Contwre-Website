@@ -85,12 +85,12 @@ function Comparison() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold gradient-text-white mb-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold gradient-text-white mb-4 sm:mb-6 px-2">
             How Contwre Works Differently
           </h2>
-          <p className="text-xl text-body-secondary max-w-4xl mx-auto leading-relaxed">
-            Most agencies pick a side.<br />
-            Sales agencies chase meetings. Marketing agencies chase clicks.<br />
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-body-secondary max-w-4xl mx-auto leading-relaxed px-2">
+            Most agencies pick a side.<br className="hidden sm:block" />
+            Sales agencies chase meetings. Marketing agencies chase clicks.<br className="hidden sm:block" />
             Contwre builds the entire revenue engine that connects both.
           </p>
         </motion.div>
@@ -104,20 +104,20 @@ function Comparison() {
           className="space-y-8"
         >
           {/* Header Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-transparent p-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
+            <div className="bg-transparent p-2 sm:p-4 col-span-2 sm:col-span-1">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                <h3 className="text-white/80 font-semibold text-sm uppercase tracking-wider mb-2">Features</h3>
-                <div className="w-8 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"></div>
+                <h3 className="text-white/80 font-semibold text-xs sm:text-sm uppercase tracking-wider mb-2">Features</h3>
+                <div className="w-6 sm:w-8 h-0.5 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"></div>
               </motion.div>
             </div>
             <motion.div 
-              className="card-glass p-6 text-center relative overflow-hidden flex items-center justify-center"
+              className="card-glass p-3 sm:p-4 md:p-6 text-center relative overflow-hidden flex items-center justify-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -127,40 +127,40 @@ function Comparison() {
                   loading="lazy"
                   src="/assets/contwre-logo-white.png" 
                   alt="Contwre Logo" 
-                  className="h-12 w-auto mx-auto"
+                  className="h-8 sm:h-10 md:h-12 w-auto mx-auto"
                 />
               </div>
             </motion.div>
             <motion.div 
-              className="card-glass p-5 text-center relative overflow-hidden"
+              className="card-glass p-3 sm:p-4 md:p-5 text-center relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
               <div className="relative z-10">
-                <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-white/70">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/10 rounded-full mx-auto mb-1 sm:mb-2 flex items-center justify-center">
+                  <svg width="10" height="10" className="sm:w-3.5 sm:h-3.5 text-white/70" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="2"/>
                     <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
                   </svg>
                 </div>
-                <p className="text-xs text-white/80 font-semibold">Sales Agencies</p>
+                <p className="text-[10px] sm:text-xs text-white/80 font-semibold">Sales Agencies</p>
               </div>
             </motion.div>
             <motion.div 
-              className="card-glass p-5 text-center relative overflow-hidden"
+              className="card-glass p-3 sm:p-4 md:p-5 text-center relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
               <div className="relative z-10">
-                <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-white/70">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white/10 rounded-full mx-auto mb-1 sm:mb-2 flex items-center justify-center">
+                  <svg width="10" height="10" className="sm:w-3.5 sm:h-3.5 text-white/70" viewBox="0 0 24 24" fill="none">
                     <path d="M3 20h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                     <path d="M5 16l4-4 3 3 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </div>
-                <p className="text-xs text-white/80 font-semibold">Marketing Agencies</p>
+                <p className="text-[10px] sm:text-xs text-white/80 font-semibold">Marketing Agencies</p>
               </div>
             </motion.div>
           </div>
@@ -174,14 +174,14 @@ function Comparison() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="grid grid-cols-1 md:grid-cols-4 gap-3 group"
+                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 group"
               >
                 {/* Feature Name */}
                 <motion.div 
-                  className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10 relative overflow-hidden"
+                  className="bg-white/5 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-white/10 relative overflow-hidden"
                 >
                   <div className="relative z-10">
-                    <p className="text-white font-medium text-xs leading-relaxed">
+                    <p className="text-white font-medium text-[10px] sm:text-xs leading-relaxed">
                       {item.feature}
                     </p>
                   </div>
@@ -189,7 +189,7 @@ function Comparison() {
 
                 {/* Contwre */}
                 <motion.div 
-                  className={`card-glass p-3 flex items-center justify-center relative overflow-hidden ${
+                  className={`card-glass p-2 sm:p-3 flex items-center justify-center relative overflow-hidden ${
                     item.contwre 
                       ? 'bg-gradient-to-br from-blue/10 to-mint/10' 
                       : 'bg-white/5'
@@ -197,8 +197,8 @@ function Comparison() {
                 >
                   {item.contwre ? (
                     <div className="flex items-center justify-center">
-                      <div className="w-6 h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">✓</span>
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-[10px] sm:text-xs">✓</span>
                       </div>
                     </div>
                   ) : (

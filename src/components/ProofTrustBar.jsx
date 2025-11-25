@@ -21,7 +21,7 @@ function ProofTrustBar() {
       {/* Section Header */}
       <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-6 md:mb-8">
         <div className="text-center">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold gradient-text-white">
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold gradient-text-white px-2">
             Trusted by founders who scale
           </h2>
         </div>

@@ -55,7 +55,7 @@ function Header() {
       }}
     >
       <div className="w-full max-w-7xl mx-auto container-padding">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Brand - 10% smaller */}
           <motion.div 
             className="flex items-center"
@@ -71,7 +71,7 @@ function Header() {
                 loading="lazy"
                 src="/assets/contwre-logo-white.png"
                 alt="Contwre Logo"
-                className="h-8 w-auto"
+                className="h-6 sm:h-8 w-auto"
               />
             </motion.a>
           </motion.div>
@@ -79,14 +79,16 @@ function Header() {
           {/* Book an Audit Button */}
           <motion.button 
             onClick={() => scrollToSection('top')}
-            className="btn-primary"
+            className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
             whileHover={{ scale: 1.05, y: -1 }}
             whileTap={{ scale: 0.95 }}
           >
-            <span>Book an Audit</span>
+            <span className="hidden sm:inline">Book an Audit</span>
+            <span className="sm:hidden">Book</span>
             <motion.div
               animate={{ x: [0, 2, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
+              className="ml-1 sm:ml-2"
             >
               →
             </motion.div>

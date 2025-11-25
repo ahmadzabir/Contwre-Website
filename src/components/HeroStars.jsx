@@ -72,7 +72,9 @@ function HeroStars() {
       }
     }
     
-    const section2 = document.querySelector('.section-bg-1')
+    // Find the first section-bg-1 which contains ProofTrustBar (section 2)
+    const allSections = document.querySelectorAll('.section-bg-1')
+    const section2 = allSections[0] // First section-bg-1 is the proof bar
     if (section2) {
       const rect = section2.getBoundingClientRect()
       section2TopRef.current = rect.top + window.scrollY
@@ -204,45 +206,65 @@ function HeroStars() {
         
         if (star.comesFromBehind) {
           // Stars coming from behind section 2 (50% of stars)
-          const section2Bottom = section2Top + section2Height
+          // These stars should appear when section 2 becomes visible and move upward
           
-          // Check if we've scrolled past the start of section 2
-          if (scrollY >= section2Top) {
-            // Calculate how far past section 2 we've scrolled
-            const scrollPastSection2 = scrollY - section2Top
+          const section2Bottom = section2Top + section2Height
+          const viewportTop = scrollY
+          const viewportBottom = scrollY + window.innerHeight
+          
+          // Stars should appear as soon as section 2 starts becoming visible
+          // Check if section 2 is at least partially visible in viewport
+          const section2VisibleTop = Math.max(viewportTop, section2Top)
+          const section2VisibleBottom = Math.min(viewportBottom, section2Bottom)
+          const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+          
+          // Stars appear when section 2 is at least 5% visible
+          if (section2VisibleHeight > section2Height * 0.05) {
+            // Calculate how much we've scrolled past section 2's top
+            const scrollPastSection2Top = Math.max(0, scrollY - section2Top)
             
-            // Stars start appearing from the bottom of section 2
-            // As we scroll down, they move upward
-            const upwardMovement = scrollPastSection2 * 0.4 // Speed of upward movement
+            // Each star has a unique starting Y position based on baseY
+            // Stars are distributed across the height of section 2, starting from the bottom
+            const starOffsetInSection = (star.baseY / 100) * section2Height
             
-            // Start position: bottom of section 2, then move up
-            const baseYPosition = section2Bottom - upwardMovement
+            // Stars start at the bottom of section 2, offset by their unique position
+            // They appear to be "behind" section 2, so they start from section 2's bottom
+            const starStartY = section2Bottom - starOffsetInSection
             
-            // Convert to viewport-relative position
-            const viewportRelativeY = baseYPosition - scrollY
+            // As we scroll, stars move upward through section 2
+            // The movement is proportional to how much we've scrolled
+            // Stars move upward by 60% of the scroll distance for smooth effect
+            const upwardMovement = scrollPastSection2Top * 0.6
+            const currentStarY = starStartY - upwardMovement
             
-            // Only show stars that are in the viewport
-            if (viewportRelativeY >= 0 && viewportRelativeY <= window.innerHeight) {
-              // Convert to canvas coordinates (0-100%)
-              const yPercent = (viewportRelativeY / window.innerHeight) * 100
-              
-              finalY = (yPercent / 100) * canvas.height
+            // Convert to viewport-relative coordinates
+            const viewportRelativeY = currentStarY - scrollY
+            
+            // Only show stars that are in or near the viewport
+            if (viewportRelativeY >= -100 && viewportRelativeY <= window.innerHeight + 100) {
+              // Convert to canvas coordinates
+              finalY = Math.max(-50, Math.min(canvas.height + 50, viewportRelativeY + 50))
               finalX = ((star.x + moveX) % 100) * canvas.width / 100
               
-              // Fade in as section 2 becomes visible, fade out as stars move up
-              const section2VisibleTop = Math.max(scrollY, section2Top)
-              const section2VisibleBottom = Math.min(scrollY + window.innerHeight, section2Bottom)
-              const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+              // Calculate section 2 visibility for fade-in effect
               const section2Visibility = section2VisibleHeight / section2Height
               
-              // Fade in when section 2 is visible
-              let fadeIn = Math.min(1, (section2Visibility - 0.1) / 0.3) // Fade in from 10% to 40% visibility
+              // Fade in from 5% to 40% visibility of section 2
+              let fadeIn = 0
+              if (section2Visibility >= 0.05) {
+                fadeIn = Math.min(1, (section2Visibility - 0.05) / 0.35) // Fade from 5% to 40%
+              }
               
-              // Fade out as stars move up (when they're in top 30% of viewport)
+              // Fade out as stars reach top of viewport
               const viewportPosition = viewportRelativeY / window.innerHeight
-              const fadeOut = viewportPosition < 0.3 ? viewportPosition / 0.3 : 1
+              let fadeOut = 1
+              if (viewportPosition < 0.2) {
+                // Fade out in top 20% of viewport
+                fadeOut = Math.max(0, viewportPosition / 0.2)
+              }
               
-              starOpacity = star.opacity * Math.min(fadeIn, fadeOut) * twinkle
+              // Stars should be visible and move upward
+              starOpacity = star.opacity * fadeIn * fadeOut * twinkle
             } else {
               // Star is outside viewport
               finalX = -1000
@@ -250,7 +272,7 @@ function HeroStars() {
               starOpacity = 0
             }
           } else {
-            // Haven't reached section 2 yet - hide these stars
+            // Section 2 not visible enough - hide stars
             finalX = -1000
             finalY = -1000
             starOpacity = 0
@@ -304,7 +326,7 @@ function HeroStars() {
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
       style={{
-        zIndex: 2,
+        zIndex: 8, // Below section 2 (z-10) but visible when section 2 is visible
         position: 'fixed',
         top: 0,
         left: 0,

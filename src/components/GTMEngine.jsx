@@ -15,7 +15,7 @@ function GTMEngine() {
           className="mb-16 text-center"
         >
           <motion.h2 
-            className="text-4xl md:text-5xl font-bold leading-tight mb-8 tracking-[-0.02em]"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 sm:mb-8 tracking-[-0.02em] px-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}
@@ -25,7 +25,7 @@ function GTMEngine() {
           </motion.h2>
           
           <motion.p 
-            className="text-xl text-body-secondary max-w-4xl mx-auto leading-relaxed mb-8"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-body-secondary max-w-4xl mx-auto leading-relaxed mb-6 sm:mb-8 px-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.7 }}
@@ -35,7 +35,7 @@ function GTMEngine() {
           </motion.p>
 
           <motion.div 
-            className="text-lg text-body-secondary max-w-4xl mx-auto leading-relaxed space-y-4 mb-8"
+            className="text-sm sm:text-base md:text-lg text-body-secondary max-w-4xl mx-auto leading-relaxed space-y-3 sm:space-y-4 mb-6 sm:mb-8 px-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.7 }}

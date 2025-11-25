@@ -70,11 +70,11 @@ function Services() {
           <p className="text-emerald-400 font-bold text-sm tracking-[0.12em] uppercase mb-4">
             What We Do
           </p>
-                <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6 tracking-[-0.02em]">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4 sm:mb-6 tracking-[-0.02em] px-2">
                   <span className="gradient-text-purple delay-1">One-stop GTM… </span>
                   <span className="gradient-text-emerald delay-2">anything that brings revenue through the door.</span>
                 </h2>
-          <p className="text-xl text-body-secondary max-w-3xl mx-auto mb-8">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-body-secondary max-w-3xl mx-auto mb-6 sm:mb-8 px-2">
             Every Growth Channel, <span className="gradient-text-gold delay-3">One Agency</span>
           </p>
         </motion.div>
@@ -90,7 +90,7 @@ function Services() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="card-glass p-10 relative overflow-hidden h-full flex flex-col">
+              <div className="card-glass p-6 sm:p-8 md:p-10 relative overflow-hidden h-full flex flex-col">
                 
                 {/* Icon (SVG, no emojis) */}
                 <motion.div
@@ -170,7 +170,7 @@ function Services() {
                 </motion.div>
                 
                 <motion.h3 
-                  className="text-2xl font-bold text-white mb-4"
+                  className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
@@ -180,7 +180,7 @@ function Services() {
                 </motion.h3>
                 
                 <motion.p 
-                  className="text-body-secondary text-lg leading-relaxed flex-grow"
+                  className="text-body-secondary text-sm sm:text-base md:text-lg leading-relaxed flex-grow"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 + index * 0.1, duration: 0.6 }}

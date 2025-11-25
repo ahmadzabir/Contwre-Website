@@ -22,7 +22,7 @@ function About() {
           >
             <div>
               <motion.h2 
-                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6"
+                className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight mb-4 sm:mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={leftVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ delay: 0.2, duration: 0.7 }}
@@ -35,7 +35,7 @@ function About() {
             </div>
 
             <motion.div 
-              className="space-y-6 text-lg text-slateLight leading-relaxed"
+              className="space-y-4 sm:space-y-6 text-sm sm:text-base md:text-lg text-slateLight leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={leftVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ delay: 0.3, duration: 0.7 }}
