@@ -31,6 +31,8 @@ function HeroStars() {
         
         // Mark 50% of stars to come from behind section 2 - ensure good distribution
         const comesFromBehind = Math.random() < 0.5
+        // Mark 10% of stars to flicker like real stars
+        const flickers = Math.random() < 0.1
         
         stars.push({
           x: Math.random() * 100,
@@ -40,12 +42,15 @@ function HeroStars() {
           opacity: opacity,
           baseX: Math.random() * 100,
           baseY: Math.random() * 100,
-          scrollUpSpeed: Math.random() * 0.20 + 0.12,
+          scrollUpSpeed: Math.random() * 0.15 + 0.18, // Slightly faster base speed
           driftSpeed: Math.random() * 0.008 + 0.002,
           twinkleSpeed: Math.random() * 0.015 + 0.005,
           color: type.color,
           type: typeIndex,
           comesFromBehind: comesFromBehind, // Mark stars that come from behind section 2
+          flickers: flickers, // Mark stars that flicker like real stars
+          flickerSpeed: flickers ? Math.random() * 0.02 + 0.01 : 0, // Random flicker speed for each star
+          flickerPhase: flickers ? Math.random() * Math.PI * 2 : 0, // Random phase offset for natural flickering
           startY: comesFromBehind ? 100 + Math.random() * 20 : Math.random() * 100, // Start below viewport if coming from behind
         })
       }
@@ -122,7 +127,7 @@ function HeroStars() {
     window.addEventListener('resize', resize, { passive: true })
 
     let lastFrameTime = 0
-    const targetFPS = 24 // Optimized to 24fps for smooth animation with better performance
+    const targetFPS = 30 // Increased to 30fps for smoother star movement
     const frameInterval = 1000 / targetFPS
 
     const animate = (currentTime) => {
@@ -200,7 +205,23 @@ function HeroStars() {
         // Simplified movement - less calculations
         const moveX = Math.sin(time + star.baseX * 0.003) * 0.3
         const moveY = Math.cos(time + star.baseY * 0.003) * 0.3
+        
+        // Regular twinkle effect
         const twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.15 + 0.85
+        
+        // Flickering effect for 10% of stars (realistic star flicker)
+        let flickerMultiplier = 1
+        if (star.flickers) {
+          // Create realistic flickering using multiple sine waves with different frequencies
+          const flicker1 = Math.sin(time * star.flickerSpeed * 3 + star.flickerPhase) * 0.3 + 0.7
+          const flicker2 = Math.sin(time * star.flickerSpeed * 7 + star.flickerPhase * 1.5) * 0.2 + 0.8
+          const flicker3 = Math.sin(time * star.flickerSpeed * 13 + star.flickerPhase * 2) * 0.15 + 0.85
+          // Combine flickers for natural randomness
+          flickerMultiplier = (flicker1 * 0.4 + flicker2 * 0.35 + flicker3 * 0.25)
+          // Add occasional dramatic flickers (like real stars)
+          const dramaticFlicker = Math.random() < 0.02 ? (Math.random() * 0.4 + 0.3) : 1
+          flickerMultiplier *= dramaticFlicker
+        }
         
         let finalX, finalY, starOpacity
         
@@ -233,8 +254,15 @@ function HeroStars() {
             
             // As we scroll, stars move upward through section 2
             // The movement is proportional to how much we've scrolled
-            // Stars move upward by 60% of the scroll distance for smooth effect
-            const upwardMovement = scrollPastSection2Top * 0.6
+            // Stars move upward much faster and smoother - using 1.8x scroll distance
+            // Apply smooth easing for more natural, fluid motion
+            const scrollProgress = Math.min(1, scrollPastSection2Top / (section2Height * 1.2))
+            // Smooth ease-in-out curve for fluid movement
+            const easedProgress = scrollProgress < 0.5 
+              ? 2 * scrollProgress * scrollProgress 
+              : 1 - Math.pow(-2 * scrollProgress + 2, 3) / 2 // Smoother cubic easing
+            // Faster movement with smooth acceleration - 1.8x base speed
+            const upwardMovement = scrollPastSection2Top * 1.8 * (0.9 + easedProgress * 0.2)
             const currentStarY = starStartY - upwardMovement
             
             // Convert to viewport-relative coordinates
@@ -264,7 +292,7 @@ function HeroStars() {
               }
               
               // Stars should be visible and move upward
-              starOpacity = star.opacity * fadeIn * fadeOut * twinkle
+              starOpacity = star.opacity * fadeIn * fadeOut * twinkle * flickerMultiplier
             } else {
               // Star is outside viewport
               finalX = -1000
@@ -281,7 +309,7 @@ function HeroStars() {
           // Regular stars (50%) - normal behavior
           finalX = ((star.x + moveX) % 100) * canvas.width / 100
           finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
-          starOpacity = star.opacity * scrollFadeOut * twinkle
+          starOpacity = star.opacity * scrollFadeOut * twinkle * flickerMultiplier
         }
         
         const finalOpacity = starOpacity

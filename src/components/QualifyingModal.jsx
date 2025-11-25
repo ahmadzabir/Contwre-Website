@@ -110,9 +110,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   if (!isOpen) return null
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
+      {isOpen && (
       <div 
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
         style={{ 
           position: 'fixed', 
           top: 0, 
@@ -123,7 +124,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
-          overscrollBehavior: 'contain'
+          overscrollBehavior: 'contain',
+          zIndex: 99999
         }}
         onScroll={(e) => e.preventDefault()}
         onWheel={(e) => e.preventDefault()}
@@ -142,7 +144,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             left: 0, 
             right: 0, 
             bottom: 0, 
-            zIndex: 1,
+            zIndex: 99998,
             overscrollBehavior: 'contain'
           }}
           onScroll={(e) => e.preventDefault()}
@@ -164,7 +166,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           style={{ 
             overflow: 'visible',
             position: 'relative',
-            zIndex: 2,
+            zIndex: 99999,
             margin: 'auto',
             display: 'flex',
             flexDirection: 'column'
@@ -302,6 +304,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           </div>
         </motion.div>
       </div>
+      )}
     </AnimatePresence>
   )
 }
