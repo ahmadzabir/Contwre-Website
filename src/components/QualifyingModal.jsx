@@ -129,12 +129,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         const availableWidth = containerRect.width
         const availableHeight = containerRect.height
 
-        // Try to get actual iframe content dimensions
-        // For cross-origin iframes, we can't access contentDocument, so we'll use a standard size
-        // LeadConnector booking forms are typically wider and taller to accommodate all fields
-        // Based on the form layout (title, details, form fields, checkbox), they need more space
+        // GHL (GoHighLevel) calendar iframes don't have fixed dimensions
+        // Recommended height is 905px to 1300px, with width at 100% for responsiveness
+        // Using 1000px width and 1100px height as a good starting point for full calendar display
         let iframeNaturalWidth = 1000
-        let iframeNaturalHeight = 1000 // Increased height to accommodate full form
+        let iframeNaturalHeight = 1100 // GHL calendars typically need 905-1300px height
 
         // Try to access iframe dimensions if same-origin (unlikely but worth trying)
         try {
@@ -143,14 +142,14 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             const body = iframeDoc.body
             if (body) {
               iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1000)
-              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1000)
+              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1100)
             }
           }
         } catch (e) {
-          // Cross-origin - use default dimensions
-          // LeadConnector booking widgets are typically 1000x1000 for full forms
+          // Cross-origin - use GHL recommended dimensions
+          // GHL calendars work best with 1000px width and 1100px height
           iframeNaturalWidth = 1000
-          iframeNaturalHeight = 1000
+          iframeNaturalHeight = 1100
         }
 
         // Calculate scale factors for both dimensions
@@ -158,10 +157,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         const scaleY = availableHeight / iframeNaturalHeight
 
         // Use the smaller scale to ensure it fits in both dimensions
-        // Use 0.88 to give more breathing room and prevent any text cutoff
-        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.88
+        // Use 0.92 to give slight breathing room while maximizing size (GHL recommendation)
+        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.92
 
-        setScaleFactor(Math.max(calculatedScale, 0.35)) // Minimum scale of 0.35 to prevent too small
+        setScaleFactor(Math.max(calculatedScale, 0.4)) // Minimum scale of 0.4
       }
 
       // Calculate on mount
@@ -238,7 +237,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           pointerEvents: 'auto',
           visibility: 'visible',
           opacity: 1,
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
+          margin: 0,
+          padding: '1rem',
+          boxSizing: 'border-box'
         }}
       >
         {/* Backdrop */}
@@ -275,11 +277,14 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             overflow: 'visible',
             position: 'relative',
             zIndex: 99999,
-            margin: 'auto',
+            margin: '0 auto',
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
-            visibility: 'visible'
+            visibility: 'visible',
+            alignSelf: 'center',
+            justifySelf: 'center',
+            flexShrink: 0
           }}
         >
           {/* Close Button */}
@@ -373,8 +378,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 className="flex-1 flex flex-col overflow-hidden min-h-0 w-full"
                 style={{ minHeight: 0, flex: '1 1 0%', height: '100%' }}
               >
-                <div className="text-center mb-0.5 sm:mb-1 flex-shrink-0">
-                  <h2 className="text-xs sm:text-sm md:text-base font-bold gradient-text-emerald mb-0 leading-tight">
+                <div className="text-center mb-0 flex-shrink-0">
+                  <h2 className="text-xs sm:text-sm font-bold gradient-text-emerald mb-0 leading-tight">
                     Schedule Your Strategy Call
                   </h2>
                 </div>
@@ -387,7 +392,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                     flex: '1 1 0%',
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 'calc(100% - 60px)', // Reserve space for header and button
+                    height: 'calc(100% - 40px)', // Reduced space for header and button
                     position: 'relative',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -395,8 +400,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   }}
                 >
                   <div style={{
-                    width: '1000px', // Natural iframe width (typical LeadConnector booking widget)
-                    height: '1000px', // Natural iframe height (increased to accommodate full form)
+                    width: '1000px', // GHL calendar natural width
+                    height: '1100px', // GHL calendar natural height (905-1300px range, using 1100px)
                     transform: `scale(${scaleFactor})`,
                     transformOrigin: 'center center',
                     display: 'flex',
@@ -408,12 +413,12 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                       src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                       style={{ 
                         width: '1000px',
-                        height: '1000px',
+                        height: '1100px',
                         border: 'none', 
                         display: 'block',
                         flex: '1 1 0%',
                         minHeight: 0,
-                        overflow: 'hidden'
+                        overflow: 'hidden' // Prevent scrollbars as per GHL recommendation
                       }}
                       scrolling="no"
                       id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
@@ -422,10 +427,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   </div>
                 </div>
 
-                <div className="flex justify-center pt-0.5 sm:pt-1 flex-shrink-0">
+                <div className="flex justify-center pt-0 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs"
+                    className="px-2 sm:px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
