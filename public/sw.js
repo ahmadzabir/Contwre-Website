@@ -1,14 +1,13 @@
-// Ultra-fast service worker for instant loading
-const CACHE_NAME = 'contwre-v2'
+// Service worker for instant loading - updated to fix routing issues
+const CACHE_NAME = 'contwre-v3'
 const CRITICAL_ASSETS = [
   '/',
   '/assets/contwre-logo-white.png',
   '/assets/engine-gif.gif',
-  '/assets/founder-together.jpg',
-  '/src/styles/index.css'
+  '/assets/founder-together.jpg'
 ]
 
-// Install event - cache critical assets
+// Install event - cache critical assets only
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -32,13 +31,37 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - serve from cache first, then network
+// Fetch event - network first for JS/CSS modules, cache for images
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request)
-      })
-  )
+  const url = new URL(event.request.url)
+  const pathname = url.pathname
+  
+  // Never cache JS/CSS modules - always fetch from network
+  if (pathname.endsWith('.js') || pathname.endsWith('.css') || pathname.includes('/assets/') && (pathname.endsWith('.js') || pathname.endsWith('.css'))) {
+    event.respondWith(fetch(event.request))
+    return
+  }
+  
+  // For HTML and images, try cache first then network
+  if (pathname.endsWith('.html') || pathname === '/' || /\.(png|jpg|jpeg|gif|svg|webp|avif|mp4)$/i.test(pathname)) {
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          return response || fetch(event.request).then((fetchResponse) => {
+            // Only cache images, not HTML
+            if (/\.(png|jpg|jpeg|gif|svg|webp|avif|mp4)$/i.test(pathname)) {
+              const responseClone = fetchResponse.clone()
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseClone)
+              })
+            }
+            return fetchResponse
+          })
+        })
+    )
+    return
+  }
+  
+  // For everything else, network only
+  event.respondWith(fetch(event.request))
 })
