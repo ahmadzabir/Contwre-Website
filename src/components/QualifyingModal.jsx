@@ -1,9 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
 
   const questions = [
     {
@@ -72,14 +84,25 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div 
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0,
+          overflowY: 'auto'
+        }}
+      >
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-black/70 backdrop-blur-md"
+          className="fixed inset-0 bg-black/70 backdrop-blur-md"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}
         />
 
         {/* Modal */}
@@ -87,7 +110,16 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative card-glass rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-white/10"
+          onClick={(e) => e.stopPropagation()}
+          className="relative card-glass rounded-3xl shadow-2xl max-w-3xl w-full my-auto border border-white/10"
+          style={{ 
+            maxHeight: '90vh', 
+            overflowY: 'auto',
+            position: 'relative',
+            zIndex: 2,
+            marginTop: 'auto',
+            marginBottom: 'auto'
+          }}
         >
           {/* Close Button */}
           <button
@@ -100,7 +132,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             </svg>
           </button>
 
-          <div className="p-8 md:p-12">
+          <div className="p-6 md:p-8 lg:p-10">
             {/* Progress Indicator */}
             {currentStep < questions.length && (
               <div className="mb-10">
@@ -130,18 +162,18 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="space-y-6 w-full"
               >
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text-white mb-10 leading-tight">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold gradient-text-white mb-8 leading-tight">
                   {questions[currentStep].question}
                 </h2>
 
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {questions[currentStep].options.map((option) => (
                     <motion.button
                       key={option.value}
                       onClick={() => handleAnswer(questions[currentStep].id, option.value)}
-                      className={`w-full p-5 text-left rounded-2xl border transition-all duration-300 relative overflow-hidden ${
+                      className={`w-full p-4 md:p-5 text-left rounded-2xl border transition-all duration-300 relative overflow-hidden ${
                         answers[questions[currentStep].id] === option.value
                           ? 'border-emerald-400/50 bg-emerald-400/10 text-white card-glass'
                           : 'border-white/10 bg-white/5 text-body-secondary hover:border-emerald-400/30 hover:bg-white/10 card-glass'
@@ -156,7 +188,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                           animate={{ opacity: 1 }}
                         />
                       )}
-                      <span className="font-semibold text-base relative z-10">{option.label}</span>
+                      <span className="font-semibold text-sm md:text-base relative z-10 block">{option.label}</span>
                     </motion.button>
                   ))}
                 </div>
@@ -170,23 +202,31 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
               >
-                <div className="text-center mb-10">
-                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold gradient-text-emerald mb-4 leading-tight">
+                <div className="text-center mb-8">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold gradient-text-emerald mb-4 leading-tight">
                     Schedule Your Strategy Call
                   </h2>
-                  <p className="text-body-secondary text-lg">
+                  <p className="text-body-secondary text-base md:text-lg">
                     Book a time that works for you. We'll discuss your GTM challenges and how we can help.
                   </p>
                 </div>
 
-                <div className="card-glass rounded-2xl p-6 overflow-hidden border border-white/10">
-                  <iframe
-                    src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
-                    style={{ width: '100%', border: 'none', overflow: 'hidden' }}
-                    scrolling="no"
-                    id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
-                    className="min-h-[600px] rounded-xl"
-                  />
+                <div className="card-glass rounded-2xl p-4 md:p-6 overflow-hidden border border-white/10">
+                  <div className="w-full" style={{ minHeight: '600px', position: 'relative' }}>
+                    <iframe
+                      src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
+                      style={{ 
+                        width: '100%', 
+                        border: 'none', 
+                        overflow: 'hidden',
+                        minHeight: '600px',
+                        display: 'block'
+                      }}
+                      scrolling="yes"
+                      id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
+                      className="rounded-xl"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-center pt-6">

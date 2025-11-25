@@ -45,7 +45,7 @@ function App() {
         <main>
           <Hero />
           
-          <div className="section-bg-1 relative z-10 pt-12 md:pt-16 lg:pt-20">
+          <div className="section-bg-1 relative z-10 pt-8 md:pt-12">
             <ProofTrustBar />
           </div>
           

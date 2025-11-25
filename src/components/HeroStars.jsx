@@ -29,8 +29,8 @@ function HeroStars() {
         const opacity = Math.random() * (type.opacityRange[1] - type.opacityRange[0]) + type.opacityRange[0]
         const speed = Math.random() * (type.speedRange[1] - type.speedRange[0]) + type.speedRange[0]
         
-        // Mark 40% of stars to come from behind section 2
-        const comesFromBehind = Math.random() < 0.4
+        // Mark 50% of stars to come from behind section 2
+        const comesFromBehind = Math.random() < 0.5
         
         stars.push({
           x: Math.random() * 100,
@@ -203,48 +203,60 @@ function HeroStars() {
         let finalX, finalY, starOpacity
         
         if (star.comesFromBehind) {
-          // Stars coming from behind section 2 (40% of stars)
-          // Calculate how much of section 2 is visible
-          const viewportTop = scrollY
-          const viewportBottom = scrollY + window.innerHeight
-          const section2VisibleTop = Math.max(viewportTop, section2Top)
-          const section2VisibleBottom = Math.min(viewportBottom, section2Top + section2Height)
-          const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
-          const section2Visibility = section2VisibleHeight / section2Height
+          // Stars coming from behind section 2 (50% of stars)
+          const section2Bottom = section2Top + section2Height
           
-          // Stars start appearing when section 2 is 10% visible
-          if (section2Visibility >= 0.1) {
-            // Calculate upward movement - stars come from behind section 2 and move up
-            const section2Bottom = section2Top + section2Height
-            const scrollProgress = Math.max(0, (scrollY - section2Top) / (section2Height * 2))
+          // Check if we've scrolled past the start of section 2
+          if (scrollY >= section2Top) {
+            // Calculate how far past section 2 we've scrolled
+            const scrollPastSection2 = scrollY - section2Top
             
-            // Stars start from bottom of section 2 and move upward
-            const startFromBottom = section2Bottom
-            const upwardOffset = scrollProgress * window.innerHeight * 0.8 // Move up as you scroll
-            const baseY = startFromBottom - upwardOffset
+            // Stars start appearing from the bottom of section 2
+            // As we scroll down, they move upward
+            const upwardMovement = scrollPastSection2 * 0.4 // Speed of upward movement
             
-            // Convert to canvas coordinates (0-100%)
-            const yPercent = ((baseY - scrollY) / window.innerHeight) * 100
+            // Start position: bottom of section 2, then move up
+            const baseYPosition = section2Bottom - upwardMovement
             
-            // Wrap around if needed
-            let finalYPercent = yPercent
-            if (finalYPercent < 0) finalYPercent = 100 + finalYPercent
-            if (finalYPercent > 100) finalYPercent = finalYPercent - 100
+            // Convert to viewport-relative position
+            const viewportRelativeY = baseYPosition - scrollY
             
-            finalY = (finalYPercent / 100) * canvas.height
-            finalX = ((star.x + moveX) % 100) * canvas.width / 100
-            
-            // Fade in as section 2 becomes visible
-            const fadeInProgress = Math.min(1, (section2Visibility - 0.1) / 0.5) // Fade in from 10% to 60% visibility
-            starOpacity = star.opacity * fadeInProgress * twinkle
+            // Only show stars that are in the viewport
+            if (viewportRelativeY >= 0 && viewportRelativeY <= window.innerHeight) {
+              // Convert to canvas coordinates (0-100%)
+              const yPercent = (viewportRelativeY / window.innerHeight) * 100
+              
+              finalY = (yPercent / 100) * canvas.height
+              finalX = ((star.x + moveX) % 100) * canvas.width / 100
+              
+              // Fade in as section 2 becomes visible, fade out as stars move up
+              const section2VisibleTop = Math.max(scrollY, section2Top)
+              const section2VisibleBottom = Math.min(scrollY + window.innerHeight, section2Bottom)
+              const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+              const section2Visibility = section2VisibleHeight / section2Height
+              
+              // Fade in when section 2 is visible
+              let fadeIn = Math.min(1, (section2Visibility - 0.1) / 0.3) // Fade in from 10% to 40% visibility
+              
+              // Fade out as stars move up (when they're in top 30% of viewport)
+              const viewportPosition = viewportRelativeY / window.innerHeight
+              const fadeOut = viewportPosition < 0.3 ? viewportPosition / 0.3 : 1
+              
+              starOpacity = star.opacity * Math.min(fadeIn, fadeOut) * twinkle
+            } else {
+              // Star is outside viewport
+              finalX = -1000
+              finalY = -1000
+              starOpacity = 0
+            }
           } else {
-            // Not visible yet - hide these stars
-            finalX = -1000 // Off screen
+            // Haven't reached section 2 yet - hide these stars
+            finalX = -1000
             finalY = -1000
             starOpacity = 0
           }
         } else {
-          // Regular stars (60%) - normal behavior
+          // Regular stars (50%) - normal behavior
           finalX = ((star.x + moveX) % 100) * canvas.width / 100
           finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
           starOpacity = star.opacity * scrollFadeOut * twinkle

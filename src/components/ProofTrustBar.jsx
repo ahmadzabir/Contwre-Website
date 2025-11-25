@@ -17,9 +17,9 @@ function ProofTrustBar() {
   ]
 
   return (
-    <section className="relative overflow-hidden w-full pt-16 md:pt-24 pb-12 md:pb-16">
+    <section className="relative overflow-hidden w-full py-8 md:py-12">
       {/* Section Header */}
-      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-8 md:mb-12">
+      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-6 md:mb-8">
         <div className="text-center">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold gradient-text-white">
             Trusted by founders who scale
