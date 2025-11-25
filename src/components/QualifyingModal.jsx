@@ -115,7 +115,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
   if (!isOpen) return null
 
-  return createPortal(
+  const modalElement = (
     <div 
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
         style={{ 
@@ -124,6 +124,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           left: 0, 
           right: 0, 
           bottom: 0,
+          width: '100vw',
+          height: '100vh',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -308,9 +312,16 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             )}
           </div>
         </motion.div>
-      </div>,
-    document.body
+      </div>
   )
+
+  // Use portal to render at body level
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalElement, document.body)
+  }
+  
+  // Fallback if document.body is not available
+  return modalElement
 }
 
 export default QualifyingModal
