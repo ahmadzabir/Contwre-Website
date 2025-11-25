@@ -283,23 +283,39 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   flex: '1 1 0%',
                   display: 'flex',
                   flexDirection: 'column',
-                  height: 'calc(100% - 60px)' // Reserve space for header and button
+                  height: 'calc(100% - 60px)', // Reserve space for header and button
+                  position: 'relative',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  overflow: 'hidden'
                 }}>
-                  <iframe
-                    src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
-                    style={{ 
-                      width: '100%', 
-                      height: '100%',
-                      border: 'none', 
-                      display: 'block',
-                      flex: '1 1 0%',
-                      minHeight: 0,
-                      overflow: 'hidden'
-                    }}
-                    scrolling="no"
-                    id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
-                    className="rounded-xl"
-                  />
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    transform: 'scale(0.8)',
+                    transformOrigin: 'top center',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'visible'
+                  }}>
+                    <iframe
+                      src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
+                      style={{ 
+                        width: '125%', // Compensate for scale (100% / 0.8 = 125%)
+                        height: '125%', // Compensate for scale (100% / 0.8 = 125%)
+                        border: 'none', 
+                        display: 'block',
+                        flex: '1 1 0%',
+                        minHeight: 0,
+                        overflow: 'hidden',
+                        marginLeft: '-12.5%', // Center the scaled iframe
+                        marginTop: '0'
+                      }}
+                      scrolling="no"
+                      id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
+                      className="rounded-xl"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex justify-center pt-0.5 sm:pt-1 flex-shrink-0">
