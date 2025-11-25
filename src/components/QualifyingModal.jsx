@@ -184,11 +184,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute -top-2 -right-2 sm:top-2 sm:right-2 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg"
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg"
             style={{ 
               position: 'absolute',
-              top: '-8px',
-              right: '-8px'
+              top: '8px',
+              right: '8px'
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -199,9 +199,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
           <div className={`flex-1 flex flex-col overflow-hidden relative ${
             currentStep >= questions.length 
-              ? 'p-3 md:p-4' 
-              : 'p-6 md:p-8 lg:p-10'
-          }`}>
+              ? 'p-3 md:p-4 pt-12 sm:pt-14' 
+              : 'p-6 md:p-8 lg:p-10 pt-12 sm:pt-14'
+          }`} style={{ minHeight: 0 }}>
             {/* Progress Indicator */}
             {currentStep < questions.length && (
               <div className="mb-6 flex-shrink-0">
@@ -231,13 +231,13 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex-1 flex flex-col overflow-hidden min-h-0"
+                className="flex-1 flex flex-col overflow-hidden min-h-0 items-center"
               >
-                <h2 className="text-lg md:text-xl lg:text-2xl font-bold gradient-text-white mb-6 leading-tight flex-shrink-0">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold gradient-text-white mb-6 leading-tight flex-shrink-0 text-center w-full">
                   {questions[currentStep].question}
                 </h2>
 
-                <div className="flex-1 overflow-y-auto space-y-2 md:space-y-3 pr-2">
+                <div className="flex-1 overflow-y-auto space-y-2 md:space-y-3 pr-2 w-full max-w-2xl mx-auto">
                   {questions[currentStep].options.map((option) => (
                     <motion.button
                       key={option.value}
@@ -269,7 +269,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex-1 flex flex-col overflow-hidden min-h-0 h-full"
+                className="flex-1 flex flex-col overflow-hidden min-h-0 h-full w-full"
               >
                 <div className="text-center mb-2 sm:mb-3 flex-shrink-0">
                   <h2 className="text-base sm:text-lg md:text-xl font-bold gradient-text-emerald mb-1 sm:mb-2 leading-tight">
@@ -280,17 +280,24 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   </p>
                 </div>
 
-                <div className="flex-1 min-h-0 w-full rounded-xl overflow-hidden border border-white/10 flex flex-col" style={{ minHeight: 0 }}>
+                <div className="flex-1 w-full rounded-xl overflow-hidden border border-white/10" style={{ 
+                  minHeight: 0, 
+                  flex: '1 1 0%',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}>
                   <iframe
                     src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                     style={{ 
                       width: '100%', 
                       height: '100%',
-                      minHeight: '600px',
                       border: 'none', 
-                      overflow: 'auto',
                       display: 'block',
-                      flex: 1
+                      flex: '1 1 0%',
+                      minHeight: 0,
+                      flexGrow: 1,
+                      flexShrink: 1,
+                      flexBasis: 0
                     }}
                     scrolling="yes"
                     id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
