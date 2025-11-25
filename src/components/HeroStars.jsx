@@ -13,14 +13,14 @@ function HeroStars() {
   // Generate stars once - visible night sky stars
   useEffect(() => {
     const stars = []
-    // Optimized star count for better performance while maintaining visibility
+    // Increased star count and size for more prominent visual effect
     const starTypes = [
-      { count: 40, sizeRange: [1.5, 2.5], opacityRange: [0.85, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
-      { count: 50, sizeRange: [1.2, 2], opacityRange: [0.75, 0.95], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 60, sizeRange: [1, 1.8], opacityRange: [0.7, 0.9], color: '#FFFFFF', speedRange: [0.015, 0.025] },
-      { count: 70, sizeRange: [0.8, 1.5], opacityRange: [0.65, 0.85], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 50, sizeRange: [0.6, 1.2], opacityRange: [0.6, 0.8], color: '#E8E8E8', speedRange: [0.015, 0.025] },
-      { count: 40, sizeRange: [0.5, 1], opacityRange: [0.55, 0.75], color: '#F0F0F0', speedRange: [0.02, 0.03] },
+      { count: 80, sizeRange: [2.5, 4], opacityRange: [0.85, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
+      { count: 100, sizeRange: [2, 3.5], opacityRange: [0.75, 0.95], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 120, sizeRange: [1.8, 3], opacityRange: [0.7, 0.9], color: '#FFFFFF', speedRange: [0.015, 0.025] },
+      { count: 140, sizeRange: [1.5, 2.5], opacityRange: [0.65, 0.85], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 100, sizeRange: [1.2, 2], opacityRange: [0.6, 0.8], color: '#E8E8E8', speedRange: [0.015, 0.025] },
+      { count: 80, sizeRange: [1, 1.8], opacityRange: [0.55, 0.75], color: '#F0F0F0', speedRange: [0.02, 0.03] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -29,7 +29,7 @@ function HeroStars() {
         const opacity = Math.random() * (type.opacityRange[1] - type.opacityRange[0]) + type.opacityRange[0]
         const speed = Math.random() * (type.speedRange[1] - type.speedRange[0]) + type.speedRange[0]
         
-        // Mark 50% of stars to come from behind section 2
+        // Mark 50% of stars to come from behind section 2 - ensure good distribution
         const comesFromBehind = Math.random() < 0.5
         
         stars.push({
@@ -288,20 +288,26 @@ function HeroStars() {
         
         // Draw star - optimized rendering for better performance
         if (finalOpacity > 0.05) { // Only skip very transparent stars
-          // Simplified rendering - single draw for better performance
+          // Enhanced rendering with larger stars and better glow
           ctx.globalAlpha = finalOpacity
           ctx.fillStyle = star.color
-          // Use smaller shadow blur for better performance
-          ctx.shadowBlur = star.size * 2
+          // Increased shadow blur for more prominent stars
+          ctx.shadowBlur = star.size * 3.5
           ctx.shadowColor = star.color
-          ctx.fillRect(finalX - star.size/2, finalY - star.size/2, star.size, star.size)
           
-          // Draw bright center core
-          ctx.globalAlpha = Math.min(finalOpacity * 1.1, 1)
+          // Draw star with glow
+          ctx.beginPath()
+          ctx.arc(finalX, finalY, star.size / 2, 0, Math.PI * 2)
+          ctx.fill()
+          
+          // Draw bright center core for larger stars
+          ctx.globalAlpha = Math.min(finalOpacity * 1.2, 1)
           ctx.shadowBlur = 0
           ctx.fillStyle = '#FFFFFF'
-          const coreSize = star.size * 0.5
-          ctx.fillRect(finalX - coreSize/2, finalY - coreSize/2, coreSize, coreSize)
+          const coreSize = star.size * 0.6
+          ctx.beginPath()
+          ctx.arc(finalX, finalY, coreSize / 2, 0, Math.PI * 2)
+          ctx.fill()
           
           ctx.shadowBlur = 0 // Reset shadow
         }
