@@ -78,7 +78,7 @@ function Header() {
 
           {/* Book an Audit Button */}
           <motion.button 
-            onClick={() => scrollToSection('main-cta')}
+            onClick={() => scrollToSection('top')}
             className="btn-primary"
             whileHover={{ scale: 1.05, y: -1 }}
             whileTap={{ scale: 0.95 }}

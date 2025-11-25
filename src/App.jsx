@@ -1,20 +1,39 @@
-import React from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import ProofTrustBar from './components/ProofTrustBar'
 import About from './components/About'
 import Footer from './components/Footer'
-import IntegrationFlow from './components/IntegrationFlow'
-import GTMEngine from './components/GTMEngine'
-import Services from './components/Services'
-import Process from './components/Process'
-import Results from './components/Results'
-import Comparison from './components/Comparison'
-import FAQ from './components/FAQ'
-import FounderSection from './components/FounderSection'
 import ErrorBoundary from './components/ErrorBoundary'
+import { storeTrackingData } from './utils/utmTracker'
+
+// Lazy load heavy components for better performance
+const IntegrationFlow = lazy(() => import('./components/IntegrationFlow'))
+const GTMEngine = lazy(() => import('./components/GTMEngine'))
+const Services = lazy(() => import('./components/Services'))
+const Process = lazy(() => import('./components/Process'))
+const Results = lazy(() => import('./components/Results'))
+const Comparison = lazy(() => import('./components/Comparison'))
+const FAQ = lazy(() => import('./components/FAQ'))
+const FounderSection = lazy(() => import('./components/FounderSection'))
+
+// Loading fallback component
+const SectionLoader = () => (
+  <div className="section-spacing">
+    <div className="w-full max-w-7xl mx-auto container-padding">
+      <div className="h-64 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-emerald-400/30 border-t-emerald-400 rounded-full animate-spin"></div>
+      </div>
+    </div>
+  </div>
+)
 
 function App() {
+  // Initialize UTM tracking on app load
+  useEffect(() => {
+    storeTrackingData()
+  }, [])
+
   return (
     <ErrorBoundary>
         <div className="App min-h-screen bg-bg text-white">
@@ -35,35 +54,51 @@ function App() {
           </div>
           
           <div className="section-bg-3 relative z-10">
-            <IntegrationFlow />
+            <Suspense fallback={<SectionLoader />}>
+              <IntegrationFlow />
+            </Suspense>
           </div>
           
           <div className="section-bg-1 relative z-10">
-            <GTMEngine />
+            <Suspense fallback={<SectionLoader />}>
+              <GTMEngine />
+            </Suspense>
           </div>
           
           <div className="section-bg-2 relative z-10">
-            <Services />
+            <Suspense fallback={<SectionLoader />}>
+              <Services />
+            </Suspense>
           </div>
           
           <div className="section-bg-3 relative z-10">
-            <Process />
+            <Suspense fallback={<SectionLoader />}>
+              <Process />
+            </Suspense>
           </div>
           
           <div className="section-bg-1 relative z-10">
-            <Results />
+            <Suspense fallback={<SectionLoader />}>
+              <Results />
+            </Suspense>
           </div>
           
           <div className="section-bg-2 relative z-10">
-            <Comparison />
+            <Suspense fallback={<SectionLoader />}>
+              <Comparison />
+            </Suspense>
           </div>
           
           <div className="section-bg-3 relative z-10">
-            <FAQ />
+            <Suspense fallback={<SectionLoader />}>
+              <FAQ />
+            </Suspense>
           </div>
           
           <div className="section-bg-1 relative z-10">
-            <FounderSection />
+            <Suspense fallback={<SectionLoader />}>
+              <FounderSection />
+            </Suspense>
           </div>
         </main>
         <Footer />

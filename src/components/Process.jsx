@@ -78,25 +78,18 @@ function Process() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="relative group"
+              className="relative"
             >
-              <div className="card-glass p-8 text-center group-hover:scale-105 transition-all duration-300 group-hover:shadow-glass-lg relative overflow-hidden h-full flex flex-col">
-                {/* Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                
+              <div className="card-glass p-8 text-center relative overflow-hidden h-full flex flex-col">
                 {/* Step Number */}
                 <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
                 
                 {/* Icon */}
-                <motion.div 
-                  className="text-emerald-400 mb-6 flex justify-center"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                >
+                <div className="text-emerald-400 mb-6 flex justify-center">
                   {step.icon}
-                </motion.div>
+                </div>
                 
                 {/* Content */}
                 <div className="relative z-10 flex-1 flex flex-col">
@@ -193,7 +186,12 @@ function Process() {
           className="text-center"
         >
           <motion.button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => {
+              const heroSection = document.getElementById('top')
+              if (heroSection) {
+                heroSection.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
             className="btn-primary-xl"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.98 }}

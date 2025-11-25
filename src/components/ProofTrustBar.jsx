@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { motion } from 'framer-motion'
 
 function ProofTrustBar() {
@@ -60,9 +60,8 @@ function ProofTrustBar() {
                 src={client.logo}
                 alt={`${client.name} logo`}
                 className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
-                fetchpriority="high"
               />
             </div>
           ))}
@@ -76,9 +75,8 @@ function ProofTrustBar() {
                 src={client.logo}
                 alt={`${client.name} logo`}
                 className="object-contain brightness-100 contrast-100 filter max-w-full max-h-full opacity-80"
-                loading="eager"
+                loading="lazy"
                 decoding="async"
-                fetchpriority="high"
               />
             </div>
           ))}
@@ -138,4 +136,4 @@ function ProofTrustBar() {
   )
 }
 
-export default ProofTrustBar
+export default memo(ProofTrustBar)

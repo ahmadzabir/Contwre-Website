@@ -155,6 +155,12 @@ function Footer() {
                   <p className="text-body-secondary text-sm mb-6">Get your custom GTM audit and revenue optimization plan.</p>
                   
                   <motion.button
+                    onClick={() => {
+                      const heroSection = document.getElementById('top')
+                      if (heroSection) {
+                        heroSection.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    }}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 1.05 }}
                     className="btn-cta-prominent w-full mb-4"

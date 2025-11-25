@@ -196,10 +196,8 @@ function Results() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -100 }}
                 transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="card-glass p-10 group-hover:scale-[1.02] transition-all duration-150 group-hover:shadow-glass-lg relative overflow-hidden"
+                className="card-glass p-10 relative overflow-hidden"
               >
-                {/* Testimonial Glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-150" />
                 
                 <motion.blockquote 
                   className="text-white text-xl leading-relaxed mb-8 relative z-10 font-light"

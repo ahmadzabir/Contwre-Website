@@ -25,6 +25,9 @@ export default defineConfig({
             if (id.includes('framer-motion')) {
               return 'animations'
             }
+            if (id.includes('@react-three')) {
+              return 'three-js'
+            }
             if (id.includes('react-router')) {
               return 'routing'
             }
@@ -62,5 +65,3 @@ export default defineConfig({
     drop: ['console', 'debugger']
   }
 })
-
-

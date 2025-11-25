@@ -117,14 +117,11 @@ function Comparison() {
               </motion.div>
             </div>
             <motion.div 
-              className="card-glass p-6 text-center relative overflow-hidden group hover:border-emerald-400/30 transition-all duration-300 flex items-center justify-center"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
+              className="card-glass p-6 text-center relative overflow-hidden flex items-center justify-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-teal-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
                 <img 
                   loading="lazy"
@@ -135,14 +132,11 @@ function Comparison() {
               </div>
             </motion.div>
             <motion.div 
-              className="card-glass p-5 text-center relative overflow-hidden group hover:border-white/20 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
+              className="card-glass p-5 text-center relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
                 <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-white/70">
@@ -154,14 +148,11 @@ function Comparison() {
               </div>
             </motion.div>
             <motion.div 
-              className="card-glass p-5 text-center relative overflow-hidden group hover:border-white/20 transition-all duration-300"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.3 }}
+              className="card-glass p-5 text-center relative overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
                 <div className="w-8 h-8 bg-white/10 rounded-full mx-auto mb-2 flex items-center justify-center">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-white/70">
@@ -187,11 +178,8 @@ function Comparison() {
               >
                 {/* Feature Name */}
                 <motion.div 
-                  className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10 group-hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
-                  whileHover={{ x: 3 }}
-                  transition={{ duration: 0.3 }}
+                  className="bg-white/5 backdrop-blur-sm rounded-lg p-3 border border-white/10 relative overflow-hidden"
                 >
-                  <div className="absolute left-0 top-0 w-0.5 h-full bg-gradient-to-b from-emerald-500 to-teal-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative z-10">
                     <p className="text-white font-medium text-xs leading-relaxed">
                       {item.feature}
@@ -205,9 +193,7 @@ function Comparison() {
                     item.contwre 
                       ? 'bg-gradient-to-br from-blue/10 to-mint/10' 
                       : 'bg-white/5'
-                  } group`}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
+                  }`}
                 >
                   {item.contwre ? (
                     <div className="flex items-center justify-center">
@@ -230,9 +216,7 @@ function Comparison() {
                     item.salesAgencies === true 
                       ? 'bg-blue/10' 
                       : 'bg-white/5'
-                  } group`}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
+                  }`}
                 >
                   {item.salesAgencies === true ? (
                     <div className="flex items-center justify-center">
@@ -255,9 +239,7 @@ function Comparison() {
                     item.marketingAgencies === true 
                       ? 'bg-green/10' 
                       : 'bg-white/5'
-                  } group`}
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
+                  }`}
                 >
                   {item.marketingAgencies === true ? (
                     <div className="flex items-center justify-center">
@@ -302,6 +284,12 @@ function Comparison() {
               </p>
               
               <motion.button
+                onClick={() => {
+                  const heroSection = document.getElementById('top')
+                  if (heroSection) {
+                    heroSection.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 1.05 }}
                 className="btn-cta-prominent mx-auto mb-4"

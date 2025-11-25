@@ -8,19 +8,19 @@ function ScrollStarField() {
   const group = useRef()
   const scroll = useScroll()
   
-  useFrame((state) => {
-    if (group.current) {
+  useFrame((state, delta) => {
+    if (group.current && delta < 0.1) { // Skip if frame time is too high
       const time = state.clock.elapsedTime
       const scrollOffset = scroll.offset
       
-      // Scroll-based movement
+      // Scroll-based movement - optimized calculations
       group.current.position.z = scrollOffset * 15 - 20
       group.current.position.y = scrollOffset * 8 - 4
       group.current.position.x = Math.sin(scrollOffset * Math.PI) * 3
       
-      // Gentle rotation
-      group.current.rotation.y = time * 0.01 + scrollOffset * 0.1
-      group.current.rotation.x = Math.sin(time * 0.005) * 0.05 + scrollOffset * 0.03
+      // Gentle rotation - reduced frequency for better performance
+      group.current.rotation.y = time * 0.008 + scrollOffset * 0.08
+      group.current.rotation.x = Math.sin(time * 0.004) * 0.04 + scrollOffset * 0.02
     }
   })
   
@@ -29,9 +29,9 @@ function ScrollStarField() {
       <Stars 
         radius={100} 
         depth={50} 
-        count={1500} 
-        factor={6} 
-        saturation={0.6} 
+        count={1000} 
+        factor={5} 
+        saturation={0.5} 
         fade={false}
         speed={0.02} 
       />
@@ -44,8 +44,8 @@ function FloatingParticles() {
   const group = useRef()
   const scroll = useScroll()
   
-  useFrame((state) => {
-    if (group.current) {
+  useFrame((state, delta) => {
+    if (group.current && delta < 0.1) { // Skip if frame time is too high
       const time = state.clock.elapsedTime
       const scrollOffset = scroll.offset
       
@@ -53,9 +53,9 @@ function FloatingParticles() {
       group.current.position.z = scrollOffset * 10 - 15
       group.current.position.y = scrollOffset * 5 - 2
       
-      // Gentle floating motion
-      group.current.rotation.y = time * 0.015 + scrollOffset * 0.15
-      group.current.rotation.x = Math.sin(time * 0.008) * 0.08 + scrollOffset * 0.05
+      // Gentle floating motion - reduced frequency
+      group.current.rotation.y = time * 0.012 + scrollOffset * 0.12
+      group.current.rotation.x = Math.sin(time * 0.006) * 0.06 + scrollOffset * 0.04
     }
   })
   
@@ -64,9 +64,9 @@ function FloatingParticles() {
       <Stars 
         radius={60} 
         depth={30} 
-        count={600} 
-        factor={4} 
-        saturation={0.7} 
+        count={400} 
+        factor={3} 
+        saturation={0.6} 
         fade={false}
         speed={0.03} 
       />
@@ -141,9 +141,9 @@ function Scene3D() {
           <Stars 
             radius={1000} 
             depth={100} 
-            count={1000} 
-            factor={5} 
-            saturation={0.5} 
+            count={600} 
+            factor={4} 
+            saturation={0.4} 
             fade={false}
             speed={0.05} 
           />

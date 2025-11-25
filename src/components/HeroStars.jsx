@@ -6,21 +6,21 @@ function HeroStars() {
   const starsRef = useRef([])
   const scrollYRef = useRef(0)
   const timeRef = useRef(0)
-  const heroHeightRef = useRef(0)
+  const heroHeightRef = useRef({ height: 0, top: 0 })
   const section2TopRef = useRef(0)
   const section2HeightRef = useRef(0)
 
   // Generate stars once - visible night sky stars
   useEffect(() => {
     const stars = []
-    // Many more stars with much better visibility and prominence
+    // Optimized star count for better performance while maintaining visibility
     const starTypes = [
-      { count: 60, sizeRange: [1.5, 2.5], opacityRange: [0.85, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
-      { count: 80, sizeRange: [1.2, 2], opacityRange: [0.75, 0.95], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 100, sizeRange: [1, 1.8], opacityRange: [0.7, 0.9], color: '#FFFFFF', speedRange: [0.015, 0.025] },
-      { count: 120, sizeRange: [0.8, 1.5], opacityRange: [0.65, 0.85], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 90, sizeRange: [0.6, 1.2], opacityRange: [0.6, 0.8], color: '#E8E8E8', speedRange: [0.015, 0.025] },
-      { count: 70, sizeRange: [0.5, 1], opacityRange: [0.55, 0.75], color: '#F0F0F0', speedRange: [0.02, 0.03] },
+      { count: 40, sizeRange: [1.5, 2.5], opacityRange: [0.85, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
+      { count: 50, sizeRange: [1.2, 2], opacityRange: [0.75, 0.95], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 60, sizeRange: [1, 1.8], opacityRange: [0.7, 0.9], color: '#FFFFFF', speedRange: [0.015, 0.025] },
+      { count: 70, sizeRange: [0.8, 1.5], opacityRange: [0.65, 0.85], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 50, sizeRange: [0.6, 1.2], opacityRange: [0.6, 0.8], color: '#E8E8E8', speedRange: [0.015, 0.025] },
+      { count: 40, sizeRange: [0.5, 1], opacityRange: [0.55, 0.75], color: '#F0F0F0', speedRange: [0.02, 0.03] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -52,7 +52,20 @@ function HeroStars() {
   // Update section measurements on scroll/resize
   const updateSectionMeasurements = () => {
     const heroSection = document.getElementById('top')
-    heroHeightRef.current = heroSection ? heroSection.offsetHeight : window.innerHeight
+    if (heroSection) {
+      const heroRect = heroSection.getBoundingClientRect()
+      heroHeightRef.current = heroSection.offsetHeight
+      // Store hero top position relative to page
+      heroHeightRef.current = {
+        height: heroSection.offsetHeight,
+        top: heroRect.top + window.scrollY
+      }
+    } else {
+      heroHeightRef.current = {
+        height: window.innerHeight,
+        top: 0
+      }
+    }
     
     const section2 = document.querySelector('.section-bg-1')
     if (section2) {
@@ -60,7 +73,8 @@ function HeroStars() {
       section2TopRef.current = rect.top + window.scrollY
       section2HeightRef.current = section2.offsetHeight
     } else {
-      section2TopRef.current = heroHeightRef.current * 2
+      const heroData = typeof heroHeightRef.current === 'object' ? heroHeightRef.current : { height: window.innerHeight, top: 0 }
+      section2TopRef.current = heroData.top + heroData.height
       section2HeightRef.current = window.innerHeight
     }
   }
@@ -101,7 +115,7 @@ function HeroStars() {
     window.addEventListener('resize', resize, { passive: true })
 
     let lastFrameTime = 0
-    const targetFPS = 30 // Reduced to 30fps for better performance
+    const targetFPS = 24 // Optimized to 24fps for smooth animation with better performance
     const frameInterval = 1000 / targetFPS
 
     const animate = (currentTime) => {
@@ -118,41 +132,56 @@ function HeroStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       
       const scrollY = scrollYRef.current
-      const heroHeight = heroHeightRef.current
+      const heroData = heroHeightRef.current
       const section2Top = section2TopRef.current
       const section2Height = section2HeightRef.current
       
+      // Get hero section data
+      const heroTop = heroData.top
+      const heroHeight = heroData.height
+      
+      // Calculate scroll progress through hero section (0 to 1)
+      const scrollProgressInHero = (scrollY - heroTop) / heroHeight
+      
       // Fade out at 90% of hero section scroll
-      const fadeOutStart = heroHeight * 0.90
-      const fadeOutEnd = heroHeight * 1.0
+      const fadeOutStart = 0.90
+      const fadeOutEnd = 1.0
       
       // Calculate fade out opacity (0 to 1, where 1 is fully visible)
       let scrollFadeOut = 1
-      if (scrollY < fadeOutStart) {
-        // Before fade out starts - fully visible
+      
+      if (scrollProgressInHero < fadeOutStart) {
+        // Before fade out starts (0-90% of hero) - fully visible
         scrollFadeOut = 1
-      } else if (scrollY >= fadeOutStart && scrollY < fadeOutEnd) {
+      } else if (scrollProgressInHero >= fadeOutStart && scrollProgressInHero < fadeOutEnd) {
         // Fading out between 90% and 100% of hero
-        scrollFadeOut = 1 - ((scrollY - fadeOutStart) / (fadeOutEnd - fadeOutStart))
+        const fadeProgress = (scrollProgressInHero - fadeOutStart) / (fadeOutEnd - fadeOutStart)
+        scrollFadeOut = 1 - fadeProgress
       } else {
         // Past hero section - check if we should fade in from behind section 2
         const section2Bottom = section2Top + section2Height
         
-        // Fade in stars when section 2 is 90% visible (10% of section 2 is above viewport)
-        // Stars start appearing when section 2 is 10% visible
-        const fadeInStart = section2Top + (section2Height * 0.1)
-        const fadeInEnd = section2Top + (section2Height * 0.9)
+        // Calculate how much of section 2 is visible in viewport
+        const viewportTop = scrollY
+        const viewportBottom = scrollY + window.innerHeight
         
-        if (scrollY >= fadeInStart && scrollY < fadeInEnd) {
-          // Fading in as section 2 becomes visible
-          const fadeProgress = (scrollY - fadeInStart) / (fadeInEnd - fadeInStart)
-          scrollFadeOut = Math.min(fadeProgress, 1)
-        } else if (scrollY >= fadeInEnd) {
-          // Section 2 is 90% visible - stars fully visible
-          scrollFadeOut = 1
-        } else {
-          // Between hero end and section 2 fade in - stars hidden
+        // Stars start appearing when section 2 is 10% visible (90% still above viewport)
+        // Stars fully visible when section 2 is 90% visible (10% still above viewport)
+        const section2VisibleTop = Math.max(viewportTop, section2Top)
+        const section2VisibleBottom = Math.min(viewportBottom, section2Bottom)
+        const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+        const section2Visibility = section2VisibleHeight / section2Height
+        
+        if (section2Visibility < 0.1) {
+          // Section 2 less than 10% visible - stars hidden
           scrollFadeOut = 0
+        } else if (section2Visibility >= 0.1 && section2Visibility < 0.9) {
+          // Section 2 between 10% and 90% visible - fade in stars
+          const fadeProgress = (section2Visibility - 0.1) / 0.8 // Normalize to 0-1
+          scrollFadeOut = fadeProgress
+        } else {
+          // Section 2 is 90%+ visible - stars fully visible
+          scrollFadeOut = 1
         }
       }
       
@@ -170,27 +199,21 @@ function HeroStars() {
         const finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
         const finalOpacity = star.opacity * scrollFadeOut * twinkle
         
-        // Draw star - make much more prominent and visible
+        // Draw star - optimized rendering for better performance
         if (finalOpacity > 0.05) { // Only skip very transparent stars
-          // Draw glow effect first (larger, more transparent)
-          ctx.globalAlpha = finalOpacity * 0.4
-          ctx.fillStyle = star.color
-          ctx.shadowBlur = star.size * 4
-          ctx.shadowColor = star.color
-          const glowSize = star.size * 2.5
-          ctx.fillRect(finalX - glowSize/2, finalY - glowSize/2, glowSize, glowSize)
-          
-          // Draw main star (brighter, more prominent)
+          // Simplified rendering - single draw for better performance
           ctx.globalAlpha = finalOpacity
-          ctx.shadowBlur = star.size * 3
+          ctx.fillStyle = star.color
+          // Use smaller shadow blur for better performance
+          ctx.shadowBlur = star.size * 2
           ctx.shadowColor = star.color
           ctx.fillRect(finalX - star.size/2, finalY - star.size/2, star.size, star.size)
           
-          // Draw bright center core for extra prominence
-          ctx.globalAlpha = Math.min(finalOpacity * 1.2, 1)
+          // Draw bright center core
+          ctx.globalAlpha = Math.min(finalOpacity * 1.1, 1)
           ctx.shadowBlur = 0
           ctx.fillStyle = '#FFFFFF'
-          const coreSize = star.size * 0.6
+          const coreSize = star.size * 0.5
           ctx.fillRect(finalX - coreSize/2, finalY - coreSize/2, coreSize, coreSize)
           
           ctx.shadowBlur = 0 // Reset shadow

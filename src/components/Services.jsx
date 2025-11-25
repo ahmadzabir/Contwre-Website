@@ -90,9 +90,7 @@ function Services() {
               viewport={{ once: true }}
               className="group"
             >
-              <div className="card-glass p-10 group-hover:scale-105 transition-all duration-150 group-hover:shadow-glass-lg relative overflow-hidden h-full flex flex-col">
-                {/* Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-150`} />
+              <div className="card-glass p-10 relative overflow-hidden h-full flex flex-col">
                 
                 {/* Icon (SVG, no emojis) */}
                 <motion.div
@@ -172,7 +170,7 @@ function Services() {
                 </motion.div>
                 
                 <motion.h3 
-                  className="text-2xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors duration-150"
+                  className="text-2xl font-bold text-white mb-4"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
