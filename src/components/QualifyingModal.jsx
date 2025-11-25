@@ -167,7 +167,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
-              ? 'max-w-5xl w-[95vw] h-[95vh] max-h-[95vh]' 
+              ? 'max-w-5xl w-[95vw] h-[90vh] max-h-[90vh]' 
               : 'max-w-3xl w-full max-h-[90vh] h-[90vh]'
           }`}
           style={{ 
@@ -199,9 +199,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
           <div className={`flex-1 flex flex-col overflow-hidden relative ${
             currentStep >= questions.length 
-              ? 'p-3 md:p-4 pt-12 sm:pt-14' 
+              ? 'p-2 sm:p-3 pt-12 sm:pt-14' 
               : 'p-6 md:p-8 lg:p-10 pt-12 sm:pt-14'
-          }`} style={{ minHeight: 0 }}>
+          }`} style={{ minHeight: 0, flex: '1 1 0%' }}>
             {/* Progress Indicator */}
             {currentStep < questions.length && (
               <div className="mb-6 flex-shrink-0">
@@ -269,14 +269,15 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex-1 flex flex-col overflow-hidden min-h-0 h-full w-full"
+                className="flex-1 flex flex-col overflow-hidden min-h-0 w-full"
+                style={{ minHeight: 0, flex: '1 1 0%' }}
               >
-                <div className="text-center mb-2 sm:mb-3 flex-shrink-0">
-                  <h2 className="text-base sm:text-lg md:text-xl font-bold gradient-text-emerald mb-1 sm:mb-2 leading-tight">
+                <div className="text-center mb-1 sm:mb-2 flex-shrink-0">
+                  <h2 className="text-sm sm:text-base md:text-lg font-bold gradient-text-emerald mb-0.5 sm:mb-1 leading-tight">
                     Schedule Your Strategy Call
                   </h2>
-                  <p className="text-body-secondary text-xs sm:text-sm md:text-base hidden sm:block">
-                    Book a time that works for you. We'll discuss your GTM challenges and how we can help.
+                  <p className="text-body-secondary text-xs hidden sm:block">
+                    Book a time that works for you.
                   </p>
                 </div>
 
@@ -284,7 +285,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   minHeight: 0, 
                   flex: '1 1 0%',
                   display: 'flex',
-                  flexDirection: 'column'
+                  flexDirection: 'column',
+                  height: '100%'
                 }}>
                   <iframe
                     src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
@@ -294,10 +296,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                       border: 'none', 
                       display: 'block',
                       flex: '1 1 0%',
-                      minHeight: 0,
-                      flexGrow: 1,
-                      flexShrink: 1,
-                      flexBasis: 0
+                      minHeight: 0
                     }}
                     scrolling="yes"
                     id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
@@ -305,10 +304,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   />
                 </div>
 
-                <div className="flex justify-center pt-2 sm:pt-3 flex-shrink-0">
+                <div className="flex justify-center pt-1 sm:pt-2 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm md:text-base"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >

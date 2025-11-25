@@ -233,6 +233,14 @@ function HeroStars() {
         
         let finalX, finalY, starOpacity
         
+        // Unified positioning - all stars use the same coordinate system
+        // Base position in viewport coordinates (0-100%)
+        const baseViewportX = (star.x + moveX) % 100
+        const baseViewportY = (star.y + moveY) % 100
+        
+        // Convert to canvas coordinates
+        finalX = baseViewportX * canvas.width / 100
+        
         if (star.comesFromBehind) {
           // Stars coming from behind section 2 (50% of stars)
           // These stars should appear when section 2 becomes visible and move upward
@@ -252,17 +260,11 @@ function HeroStars() {
             // Calculate how much we've scrolled past section 2's top
             const scrollPastSection2Top = Math.max(0, scrollY - section2Top)
             
-            // Each star has a unique starting Y position based on baseY
-            // Stars are distributed across the height of section 2, starting from the bottom
-            const starOffsetInSection = (star.baseY / 100) * section2Height
+            // Use the same base Y position as regular stars, but offset by scroll
+            // This ensures stars appear in the same visual layer
+            const baseYPosition = baseViewportY * canvas.height / 100
             
-            // Stars start at the bottom of section 2, offset by their unique position
-            // They appear to be "behind" section 2, so they start from section 2's bottom
-            const starStartY = section2Bottom - starOffsetInSection
-            
-            // As we scroll, stars move upward through section 2
-            // The movement is proportional to how much we've scrolled
-            // Stars move upward much faster and smoother - using 1.8x scroll distance
+            // Stars move upward faster as we scroll past section 2
             // Apply smooth easing for more natural, fluid motion
             const scrollProgress = Math.min(1, scrollPastSection2Top / (section2Height * 1.2))
             // Smooth ease-in-out curve for fluid movement
@@ -271,52 +273,48 @@ function HeroStars() {
               : 1 - Math.pow(-2 * scrollProgress + 2, 3) / 2 // Smoother cubic easing
             // Faster movement with smooth acceleration - 1.8x base speed
             const upwardMovement = scrollPastSection2Top * 1.8 * (0.9 + easedProgress * 0.2)
-            const currentStarY = starStartY - upwardMovement
             
-            // Convert to viewport-relative coordinates
-            const viewportRelativeY = currentStarY - scrollY
+            // Convert upward movement to viewport percentage
+            const upwardMovementPercent = (upwardMovement / canvas.height) * 100
             
-            // Only show stars that are in or near the viewport
-            if (viewportRelativeY >= -100 && viewportRelativeY <= window.innerHeight + 100) {
-              // Convert to canvas coordinates
-              finalY = Math.max(-50, Math.min(canvas.height + 50, viewportRelativeY + 50))
-              finalX = ((star.x + moveX) % 100) * canvas.width / 100
-              
-              // Calculate section 2 visibility for fade-in effect
-              const section2Visibility = section2VisibleHeight / section2Height
-              
-              // Fade in from 2% to 40% visibility of section 2 (earlier to prevent gap)
-              let fadeIn = 0
-              if (section2Visibility >= 0.02) {
-                fadeIn = Math.min(1, (section2Visibility - 0.02) / 0.38) // Fade from 2% to 40%
-              }
-              
-              // Fade out as stars reach top of viewport
-              const viewportPosition = viewportRelativeY / window.innerHeight
-              let fadeOut = 1
-              if (viewportPosition < 0.2) {
-                // Fade out in top 20% of viewport
-                fadeOut = Math.max(0, viewportPosition / 0.2)
-              }
-              
-              // Stars should be visible and move upward
-              starOpacity = star.opacity * fadeIn * fadeOut * twinkle * flickerMultiplier
-            } else {
-              // Star is outside viewport
-              finalX = -1000
-              finalY = -1000
-              starOpacity = 0
+            // Position star: start from base position, move upward
+            // Use modulo to wrap around, creating seamless loop
+            const adjustedY = (baseViewportY - upwardMovementPercent + 100) % 100
+            finalY = adjustedY * canvas.height / 100
+            
+            // Calculate section 2 visibility for fade-in effect
+            const section2Visibility = section2VisibleHeight / section2Height
+            
+            // Fade in from 2% to 40% visibility of section 2 (earlier to prevent gap)
+            let fadeIn = 0
+            if (section2Visibility >= 0.02) {
+              fadeIn = Math.min(1, (section2Visibility - 0.02) / 0.38) // Fade from 2% to 40%
             }
+            
+            // Blend with regular stars fade out for seamless transition
+            // When section 2 is becoming visible, blend the two star groups
+            const blendFactor = Math.min(1, section2Visibility / 0.4) // Blend from 0% to 40% visibility
+            const combinedFade = Math.max(fadeIn, scrollFadeOut * (1 - blendFactor))
+            
+            // Fade out as stars reach top of viewport
+            const viewportPosition = adjustedY / 100
+            let fadeOut = 1
+            if (viewportPosition < 0.2) {
+              // Fade out in top 20% of viewport
+              fadeOut = Math.max(0, viewportPosition / 0.2)
+            }
+            
+            // Stars should be visible and move upward
+            starOpacity = star.opacity * combinedFade * fadeOut * twinkle * flickerMultiplier
           } else {
-            // Section 2 not visible enough - hide stars
-            finalX = -1000
-            finalY = -1000
-            starOpacity = 0
+            // Section 2 not visible enough - use regular star behavior
+            finalY = ((baseViewportY - scrollUpOffset + 100) % 100) * canvas.height / 100
+            starOpacity = star.opacity * scrollFadeOut * twinkle * flickerMultiplier
           }
         } else {
           // Regular stars (50%) - normal behavior
-          finalX = ((star.x + moveX) % 100) * canvas.width / 100
-          finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
+          // Use same coordinate system for consistency
+          finalY = ((baseViewportY - scrollUpOffset + 100) % 100) * canvas.height / 100
           starOpacity = star.opacity * scrollFadeOut * twinkle * flickerMultiplier
         }
         
