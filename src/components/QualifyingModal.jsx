@@ -167,7 +167,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
-              ? 'max-w-5xl w-[95vw] h-[90vh] max-h-[90vh]' 
+              ? 'max-w-6xl w-[98vw] h-[96vh] max-h-[96vh]' 
               : 'max-w-3xl w-full max-h-[90vh] h-[90vh]'
           }`}
           style={{ 
@@ -184,11 +184,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 sm:top-3 sm:right-3 w-10 h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg"
+            className="absolute top-1 right-1 sm:top-2 sm:right-2 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg"
             style={{ 
               position: 'absolute',
-              top: '8px',
-              right: '8px'
+              top: '4px',
+              right: '4px'
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -199,7 +199,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
           <div className={`flex-1 flex flex-col overflow-hidden relative ${
             currentStep >= questions.length 
-              ? 'p-2 sm:p-3 pt-12 sm:pt-14' 
+              ? 'p-1 sm:p-2 pt-8 sm:pt-10' 
               : 'p-6 md:p-8 lg:p-10 pt-12 sm:pt-14'
           }`} style={{ minHeight: 0, flex: '1 1 0%' }}>
             {/* Progress Indicator */}
@@ -270,15 +270,12 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="flex-1 flex flex-col overflow-hidden min-h-0 w-full"
-                style={{ minHeight: 0, flex: '1 1 0%' }}
+                style={{ minHeight: 0, flex: '1 1 0%', height: '100%' }}
               >
-                <div className="text-center mb-1 sm:mb-2 flex-shrink-0">
-                  <h2 className="text-sm sm:text-base md:text-lg font-bold gradient-text-emerald mb-0.5 sm:mb-1 leading-tight">
+                <div className="text-center mb-0.5 sm:mb-1 flex-shrink-0">
+                  <h2 className="text-xs sm:text-sm md:text-base font-bold gradient-text-emerald mb-0 leading-tight">
                     Schedule Your Strategy Call
                   </h2>
-                  <p className="text-body-secondary text-xs hidden sm:block">
-                    Book a time that works for you.
-                  </p>
                 </div>
 
                 <div className="flex-1 w-full rounded-xl overflow-hidden border border-white/10" style={{ 
@@ -286,7 +283,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   flex: '1 1 0%',
                   display: 'flex',
                   flexDirection: 'column',
-                  height: '100%'
+                  height: 'calc(100% - 60px)' // Reserve space for header and button
                 }}>
                   <iframe
                     src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
@@ -296,18 +293,19 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                       border: 'none', 
                       display: 'block',
                       flex: '1 1 0%',
-                      minHeight: 0
+                      minHeight: 0,
+                      overflow: 'hidden'
                     }}
-                    scrolling="yes"
+                    scrolling="no"
                     id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
                     className="rounded-xl"
                   />
                 </div>
 
-                <div className="flex justify-center pt-1 sm:pt-2 flex-shrink-0">
+                <div className="flex justify-center pt-0.5 sm:pt-1 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs sm:text-sm"
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
