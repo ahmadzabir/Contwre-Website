@@ -2,12 +2,14 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import HeroStars from './HeroStars'
 import { storeTrackingData, getStoredTrackingData } from '../utils/utmTracker'
+import QualifyingModal from './QualifyingModal'
 
 function Hero() {
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState(null) // 'success' or 'error'
   const [trackingData, setTrackingData] = useState(null)
+  const [showModal, setShowModal] = useState(false)
 
   // Initialize tracking on component mount
   useEffect(() => {
@@ -21,6 +23,57 @@ function Hero() {
       element.scrollIntoView({ behavior: 'smooth' })
     }
   }, [])
+
+  const handleQualifyingSubmit = async (answers) => {
+    // Get the most up-to-date tracking data
+    const currentTrackingData = getStoredTrackingData()
+
+    const payload = {
+      email: email,
+      timestamp: new Date().toISOString(),
+      source: 'hero-section',
+      // Qualifying answers
+      revenue_stage: answers.revenue_stage || null,
+      biggest_challenge: answers.biggest_challenge || null,
+      primary_channel: answers.primary_channel || null,
+      timeline: answers.timeline || null,
+      // UTM Parameters
+      utm_source: currentTrackingData.utm_source || null,
+      utm_medium: currentTrackingData.utm_medium || null,
+      utm_campaign: currentTrackingData.utm_campaign || null,
+      utm_term: currentTrackingData.utm_term || null,
+      utm_content: currentTrackingData.utm_content || null,
+      // Additional source tracking
+      source_param: currentTrackingData.source || null,
+      // Referrer information
+      referrer: currentTrackingData.referrer || 'direct',
+      landing_page: currentTrackingData.landingPage || window.location.href,
+      // Device and session info
+      user_agent: currentTrackingData.userAgent || navigator.userAgent,
+      screen_width: currentTrackingData.screenWidth || window.screen.width,
+      screen_height: currentTrackingData.screenHeight || window.screen.height,
+      language: currentTrackingData.language || navigator.language,
+      timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      first_visit: currentTrackingData.firstVisit || false,
+      // Page context
+      page_url: window.location.href,
+      page_path: window.location.pathname
+    }
+
+    try {
+      await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+      // Clear email after successful submission
+      setEmail('')
+    } catch (error) {
+      console.error('Error submitting qualifying data:', error)
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -71,8 +124,9 @@ function Hero() {
 
       if (response.ok) {
         setSubmitStatus('success')
-        setEmail('')
-        setTimeout(() => setSubmitStatus(null), 3000)
+        // Open qualifying modal instead of just showing success
+        setShowModal(true)
+        // Don't clear email yet, keep it for the modal
       } else {
         setSubmitStatus('error')
         setTimeout(() => setSubmitStatus(null), 3000)
@@ -189,6 +243,17 @@ function Hero() {
 
         </motion.div>
       </div>
+
+      {/* Qualifying Modal */}
+      <QualifyingModal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false)
+          setEmail('') // Clear email when modal closes
+        }}
+        email={email}
+        onSubmit={handleQualifyingSubmit}
+      />
     </section>
   )
 }
