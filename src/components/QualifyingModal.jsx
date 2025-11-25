@@ -226,27 +226,19 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           bottom: 0,
           width: '100vw',
           height: '100vh',
-          maxWidth: '100vw',
-          maxHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-          overscrollBehavior: 'contain',
           zIndex: 99999,
           pointerEvents: 'auto',
-          visibility: 'visible',
-          opacity: 1,
-          backgroundColor: 'transparent',
-          margin: 0,
-          padding: '1rem',
-          boxSizing: 'border-box'
+          overflow: 'auto'
         }}
       >
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           onClick={onClose}
           className="fixed inset-0 bg-black/70 backdrop-blur-md"
           style={{ 
@@ -255,36 +247,32 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             left: 0, 
             right: 0, 
             bottom: 0, 
-            zIndex: 99998,
-            overscrollBehavior: 'contain',
-            pointerEvents: 'auto',
-            visibility: 'visible',
-            opacity: 1
+            zIndex: 99998
           }}
         />
 
         {/* Modal */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
               ? 'max-w-6xl w-[98vw] h-[96vh] max-h-[96vh]' 
-              : 'max-w-3xl w-full max-h-[90vh] h-[90vh]'
+              : 'max-w-3xl w-full max-h-[90vh]'
           }`}
           style={{ 
-            overflow: 'visible',
             position: 'relative',
             zIndex: 99999,
-            margin: '0 auto',
+            margin: 'auto',
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
-            visibility: 'visible',
-            alignSelf: 'center',
-            justifySelf: 'center',
-            flexShrink: 0
+            maxHeight: currentStep >= questions.length ? '96vh' : '90vh',
+            width: currentStep >= questions.length ? '98vw' : 'calc(100% - 2rem)',
+            maxWidth: currentStep >= questions.length ? '96rem' : '48rem'
           }}
         >
           {/* Close Button */}
