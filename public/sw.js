@@ -1,5 +1,5 @@
 // Service worker for instant loading - updated to fix routing issues
-const CACHE_NAME = 'contwre-v3'
+const CACHE_NAME = 'contwre-v4'
 const CRITICAL_ASSETS = [
   '/',
   '/assets/contwre-logo-white.png',

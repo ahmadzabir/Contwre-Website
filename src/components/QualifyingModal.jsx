@@ -7,6 +7,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const [answers, setAnswers] = useState({})
   const scrollPositionRef = useRef(0)
 
+  // Debug logging
+  useEffect(() => {
+    console.log('QualifyingModal render - isOpen:', isOpen, 'email:', email)
+  }, [isOpen, email])
+
   // Prevent body scroll when modal is open and lock scroll position
   useEffect(() => {
     if (isOpen) {
@@ -108,19 +113,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     onClose()
   }
 
-  const [mounted, setMounted] = useState(false)
+  if (!isOpen) return null
 
-  useEffect(() => {
-    setMounted(true)
-    return () => setMounted(false)
-  }, [])
-
-  if (!isOpen || !mounted) return null
-
-  const modalContent = (
-    <AnimatePresence mode="wait">
-      {isOpen && (
-      <div 
+  return createPortal(
+    <div 
         className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
         style={{ 
           position: 'fixed', 
@@ -134,14 +130,16 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           overflow: 'hidden',
           overscrollBehavior: 'contain',
           zIndex: 99999,
-          pointerEvents: 'auto'
+          pointerEvents: 'auto',
+          visibility: 'visible',
+          opacity: 1,
+          backgroundColor: 'transparent'
         }}
       >
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           onClick={onClose}
           className="fixed inset-0 bg-black/70 backdrop-blur-md"
           style={{ 
@@ -152,7 +150,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             bottom: 0, 
             zIndex: 99998,
             overscrollBehavior: 'contain',
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
+            visibility: 'visible',
+            opacity: 1
           }}
         />
 
@@ -160,7 +160,6 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
@@ -309,12 +308,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             )}
           </div>
         </motion.div>
-      </div>
-      )}
-    </AnimatePresence>
+      </div>,
+    document.body
   )
-
-  return createPortal(modalContent, document.body)
 }
 
 export default QualifyingModal
