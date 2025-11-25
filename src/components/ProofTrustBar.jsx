@@ -17,18 +17,18 @@ function ProofTrustBar() {
   ]
 
   return (
-    <section className="section-spacing relative overflow-hidden w-full pt-16 md:pt-24">
+    <section className="section-spacing relative overflow-hidden w-full pt-8 md:pt-12">
       {/* Section Header */}
       <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-1">
         <div className="text-center">
-          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold gradient-text-white">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold gradient-text-white">
             Trusted by founders who scale
           </h2>
         </div>
       </div>
 
       {/* Truly Infinite Scrolling Logo Carousel */}
-      <div className="relative w-full overflow-hidden py-2 carousel-container pointer-events-none select-none">
+      <div className="relative w-full overflow-hidden py-1 carousel-container pointer-events-none select-none">
         <motion.div 
           className="carousel-track"
           initial={{ opacity: 1 }}
@@ -117,7 +117,7 @@ function ProofTrustBar() {
         .carousel-item {
           flex: 0 0 auto;
           width: 12rem;
-          height: 3rem;
+          height: 2rem;
         }
         
         @keyframes infiniteScroll {

@@ -10,12 +10,14 @@ function HeroStars() {
   // Generate stars once - visible night sky stars
   useEffect(() => {
     const stars = []
-    // More stars with better visibility
+    // Many more stars with much better visibility and prominence
     const starTypes = [
-      { count: 20, sizeRange: [1, 1.5], opacityRange: [0.7, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
-      { count: 30, sizeRange: [0.8, 1.2], opacityRange: [0.6, 0.9], color: '#FFFFFF', speedRange: [0.02, 0.03] },
-      { count: 25, sizeRange: [0.6, 1], opacityRange: [0.5, 0.8], color: '#E0E0E0', speedRange: [0.015, 0.025] },
-      { count: 15, sizeRange: [0.5, 0.8], opacityRange: [0.4, 0.7], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 60, sizeRange: [1.5, 2.5], opacityRange: [0.85, 1], color: '#FFFFFF', speedRange: [0.01, 0.02] },
+      { count: 80, sizeRange: [1.2, 2], opacityRange: [0.75, 0.95], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 100, sizeRange: [1, 1.8], opacityRange: [0.7, 0.9], color: '#FFFFFF', speedRange: [0.015, 0.025] },
+      { count: 120, sizeRange: [0.8, 1.5], opacityRange: [0.65, 0.85], color: '#FFFFFF', speedRange: [0.02, 0.03] },
+      { count: 90, sizeRange: [0.6, 1.2], opacityRange: [0.6, 0.8], color: '#E8E8E8', speedRange: [0.015, 0.025] },
+      { count: 70, sizeRange: [0.5, 1], opacityRange: [0.55, 0.75], color: '#F0F0F0', speedRange: [0.02, 0.03] },
     ]
     
     starTypes.forEach((type, typeIndex) => {
@@ -105,14 +107,29 @@ function HeroStars() {
         const finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
         const finalOpacity = star.opacity * scrollFadeOut * twinkle
         
-        // Draw star - make more visible
+        // Draw star - make much more prominent and visible
         if (finalOpacity > 0.05) { // Only skip very transparent stars
-          ctx.globalAlpha = finalOpacity
+          // Draw glow effect first (larger, more transparent)
+          ctx.globalAlpha = finalOpacity * 0.4
           ctx.fillStyle = star.color
-          // Draw a small glow effect for better visibility
-          ctx.shadowBlur = star.size * 2
+          ctx.shadowBlur = star.size * 4
+          ctx.shadowColor = star.color
+          const glowSize = star.size * 2.5
+          ctx.fillRect(finalX - glowSize/2, finalY - glowSize/2, glowSize, glowSize)
+          
+          // Draw main star (brighter, more prominent)
+          ctx.globalAlpha = finalOpacity
+          ctx.shadowBlur = star.size * 3
           ctx.shadowColor = star.color
           ctx.fillRect(finalX - star.size/2, finalY - star.size/2, star.size, star.size)
+          
+          // Draw bright center core for extra prominence
+          ctx.globalAlpha = Math.min(finalOpacity * 1.2, 1)
+          ctx.shadowBlur = 0
+          ctx.fillStyle = '#FFFFFF'
+          const coreSize = star.size * 0.6
+          ctx.fillRect(finalX - coreSize/2, finalY - coreSize/2, coreSize, coreSize)
+          
           ctx.shadowBlur = 0 // Reset shadow
         }
       })

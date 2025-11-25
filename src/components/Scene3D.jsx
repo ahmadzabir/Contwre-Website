@@ -29,10 +29,10 @@ function ScrollStarField() {
       <Stars 
         radius={100} 
         depth={50} 
-        count={800} 
-        factor={4} 
-        saturation={0.3} 
-        fade 
+        count={1500} 
+        factor={6} 
+        saturation={0.6} 
+        fade={false}
         speed={0.02} 
       />
     </group>
@@ -64,10 +64,10 @@ function FloatingParticles() {
       <Stars 
         radius={60} 
         depth={30} 
-        count={300} 
-        factor={2} 
-        saturation={0.5} 
-        fade 
+        count={600} 
+        factor={4} 
+        saturation={0.7} 
+        fade={false}
         speed={0.03} 
       />
     </group>
@@ -141,10 +141,10 @@ function Scene3D() {
           <Stars 
             radius={1000} 
             depth={100} 
-            count={500} 
-            factor={3} 
-            saturation={0.2} 
-            fade 
+            count={1000} 
+            factor={5} 
+            saturation={0.5} 
+            fade={false}
             speed={0.05} 
           />
         </Suspense>
