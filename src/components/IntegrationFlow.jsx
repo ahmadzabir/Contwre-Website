@@ -31,7 +31,7 @@ function IntegrationFlow() {
           viewport={{ once: true }}
           className="text-center"
         >
-          <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/10">
+          <div className="card-glass rounded-3xl p-8 md:p-12">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-6">
               <span className="gradient-text-blue font-semibold text-lg sm:text-xl md:text-2xl">Strong Offer</span>
               <span className="text-emerald-400 text-xl sm:text-2xl md:text-3xl font-light">+</span>

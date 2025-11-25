@@ -81,11 +81,6 @@ function Process() {
               className="relative"
             >
               <div className="card-glass p-8 text-center relative overflow-hidden h-full flex flex-col">
-                {/* Step Number */}
-                <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                  {index + 1}
-                </div>
-                
                 {/* Icon */}
                 <div className="text-emerald-400 mb-6 flex justify-center">
                   {step.icon}
@@ -100,15 +95,6 @@ function Process() {
                     {step.description}
                   </p>
                 </div>
-                
-                {/* Progress Bar */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 1 }}
-                  viewport={{ once: true }}
-                />
               </div>
             </motion.div>
           ))}
@@ -122,11 +108,7 @@ function Process() {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <div className="bg-gradient-to-r from-emerald-500/10 via-teal-400/10 to-emerald-500/10 backdrop-blur-sm rounded-3xl p-8 border border-emerald-400/20 relative overflow-hidden">
-            {/* Animated background elements */}
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-400/5 animate-pulse"></div>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
-            
+          <div className="card-glass rounded-3xl p-8 relative overflow-hidden">
             <div className="relative z-10">
               <h3 className="text-2xl font-bold text-white mb-6 text-center gradient-text-emerald">
                 Our Complete Process

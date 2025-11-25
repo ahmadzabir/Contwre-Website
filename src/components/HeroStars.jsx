@@ -29,6 +29,9 @@ function HeroStars() {
         const opacity = Math.random() * (type.opacityRange[1] - type.opacityRange[0]) + type.opacityRange[0]
         const speed = Math.random() * (type.speedRange[1] - type.speedRange[0]) + type.speedRange[0]
         
+        // Mark 40% of stars to come from behind section 2
+        const comesFromBehind = Math.random() < 0.4
+        
         stars.push({
           x: Math.random() * 100,
           y: Math.random() * 100,
@@ -42,6 +45,8 @@ function HeroStars() {
           twinkleSpeed: Math.random() * 0.015 + 0.005,
           color: type.color,
           type: typeIndex,
+          comesFromBehind: comesFromBehind, // Mark stars that come from behind section 2
+          startY: comesFromBehind ? 100 + Math.random() * 20 : Math.random() * 100, // Start below viewport if coming from behind
         })
       }
     })
@@ -195,9 +200,57 @@ function HeroStars() {
         const moveY = Math.cos(time + star.baseY * 0.003) * 0.3
         const twinkle = Math.sin(time * star.twinkleSpeed + star.baseX) * 0.15 + 0.85
         
-        const finalX = ((star.x + moveX) % 100) * canvas.width / 100
-        const finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
-        const finalOpacity = star.opacity * scrollFadeOut * twinkle
+        let finalX, finalY, starOpacity
+        
+        if (star.comesFromBehind) {
+          // Stars coming from behind section 2 (40% of stars)
+          // Calculate how much of section 2 is visible
+          const viewportTop = scrollY
+          const viewportBottom = scrollY + window.innerHeight
+          const section2VisibleTop = Math.max(viewportTop, section2Top)
+          const section2VisibleBottom = Math.min(viewportBottom, section2Top + section2Height)
+          const section2VisibleHeight = Math.max(0, section2VisibleBottom - section2VisibleTop)
+          const section2Visibility = section2VisibleHeight / section2Height
+          
+          // Stars start appearing when section 2 is 10% visible
+          if (section2Visibility >= 0.1) {
+            // Calculate upward movement - stars come from behind section 2 and move up
+            const section2Bottom = section2Top + section2Height
+            const scrollProgress = Math.max(0, (scrollY - section2Top) / (section2Height * 2))
+            
+            // Stars start from bottom of section 2 and move upward
+            const startFromBottom = section2Bottom
+            const upwardOffset = scrollProgress * window.innerHeight * 0.8 // Move up as you scroll
+            const baseY = startFromBottom - upwardOffset
+            
+            // Convert to canvas coordinates (0-100%)
+            const yPercent = ((baseY - scrollY) / window.innerHeight) * 100
+            
+            // Wrap around if needed
+            let finalYPercent = yPercent
+            if (finalYPercent < 0) finalYPercent = 100 + finalYPercent
+            if (finalYPercent > 100) finalYPercent = finalYPercent - 100
+            
+            finalY = (finalYPercent / 100) * canvas.height
+            finalX = ((star.x + moveX) % 100) * canvas.width / 100
+            
+            // Fade in as section 2 becomes visible
+            const fadeInProgress = Math.min(1, (section2Visibility - 0.1) / 0.5) // Fade in from 10% to 60% visibility
+            starOpacity = star.opacity * fadeInProgress * twinkle
+          } else {
+            // Not visible yet - hide these stars
+            finalX = -1000 // Off screen
+            finalY = -1000
+            starOpacity = 0
+          }
+        } else {
+          // Regular stars (60%) - normal behavior
+          finalX = ((star.x + moveX) % 100) * canvas.width / 100
+          finalY = ((star.y + moveY - scrollUpOffset) % 100) * canvas.height / 100
+          starOpacity = star.opacity * scrollFadeOut * twinkle
+        }
+        
+        const finalOpacity = starOpacity
         
         // Draw star - optimized rendering for better performance
         if (finalOpacity > 0.05) { // Only skip very transparent stars

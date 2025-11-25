@@ -98,29 +98,6 @@ function Hero() {
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center"
         >
-                {/* Two Separate Badges */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="flex items-center justify-center gap-3 mb-8 md:mb-12"
-                >
-                  <motion.div
-                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-yellow-400/60 text-sm font-medium gradient-text-emerald"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    Founder-led
-                  </motion.div>
-                  <motion.div
-                    className="inline-flex items-center justify-center px-4 py-2 bg-black/50 rounded-full border border-yellow-400/60 text-sm font-medium gradient-text-blue"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    Full-service GTM
-                  </motion.div>
-                </motion.div>
-
                 {/* Main Headline - 10% smaller */}
                 <motion.h1
                   initial={{ opacity: 0, y: 30 }}

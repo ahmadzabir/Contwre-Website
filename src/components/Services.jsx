@@ -188,15 +188,6 @@ function Services() {
                 >
                   {service.subtitle}
                 </motion.p>
-                
-                {/* Progress Bar */}
-                <motion.div
-                  className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${service.color} rounded-full`}
-                  initial={{ width: 0 }}
-                  whileInView={{ width: "100%" }}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 1 }}
-                  viewport={{ once: true }}
-                />
               </div>
             </motion.div>
           ))}

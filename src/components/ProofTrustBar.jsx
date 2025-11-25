@@ -17,9 +17,9 @@ function ProofTrustBar() {
   ]
 
   return (
-    <section className="relative overflow-hidden w-full py-6 md:py-8">
+    <section className="relative overflow-hidden w-full pt-16 md:pt-24 pb-12 md:pb-16">
       {/* Section Header */}
-      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-3">
+      <div className="w-full max-w-7xl mx-auto container-padding relative z-10 mb-8 md:mb-12">
         <div className="text-center">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold gradient-text-white">
             Trusted by founders who scale
@@ -28,7 +28,7 @@ function ProofTrustBar() {
       </div>
 
       {/* Truly Infinite Scrolling Logo Carousel */}
-      <div className="relative w-full overflow-hidden py-2 carousel-container pointer-events-none select-none">
+      <div className="relative w-full overflow-hidden py-4 md:py-6 carousel-container pointer-events-none select-none">
         <motion.div 
           className="carousel-track"
           initial={{ opacity: 1 }}
