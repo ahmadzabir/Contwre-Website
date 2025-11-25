@@ -131,10 +131,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
 
         // Try to get actual iframe content dimensions
         // For cross-origin iframes, we can't access contentDocument, so we'll use a standard size
-        // Most booking widgets are around 1000-1200px wide and 700-900px tall
-        // Based on typical LeadConnector booking widgets, they're usually ~1100x750
-        let iframeNaturalWidth = 1100
-        let iframeNaturalHeight = 750
+        // LeadConnector booking forms are typically wider and taller to accommodate all fields
+        // Based on the form layout (title, details, form fields, checkbox), they need more space
+        let iframeNaturalWidth = 1000
+        let iframeNaturalHeight = 1000 // Increased height to accommodate full form
 
         // Try to access iframe dimensions if same-origin (unlikely but worth trying)
         try {
@@ -142,15 +142,15 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           if (iframeDoc) {
             const body = iframeDoc.body
             if (body) {
-              iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1100)
-              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 750)
+              iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1000)
+              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1000)
             }
           }
         } catch (e) {
           // Cross-origin - use default dimensions
-          // LeadConnector booking widgets are typically 1100x750
-          iframeNaturalWidth = 1100
-          iframeNaturalHeight = 750
+          // LeadConnector booking widgets are typically 1000x1000 for full forms
+          iframeNaturalWidth = 1000
+          iframeNaturalHeight = 1000
         }
 
         // Calculate scale factors for both dimensions
@@ -158,10 +158,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         const scaleY = availableHeight / iframeNaturalHeight
 
         // Use the smaller scale to ensure it fits in both dimensions
-        // Add small padding (0.95) to ensure no overflow
-        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.95
+        // Use 0.88 to give more breathing room and prevent any text cutoff
+        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.88
 
-        setScaleFactor(Math.max(calculatedScale, 0.5)) // Minimum scale of 0.5 to prevent too small
+        setScaleFactor(Math.max(calculatedScale, 0.35)) // Minimum scale of 0.35 to prevent too small
       }
 
       // Calculate on mount
@@ -395,8 +395,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   }}
                 >
                   <div style={{
-                    width: '1100px', // Natural iframe width (typical LeadConnector booking widget)
-                    height: '750px', // Natural iframe height (typical LeadConnector booking widget)
+                    width: '1000px', // Natural iframe width (typical LeadConnector booking widget)
+                    height: '1000px', // Natural iframe height (increased to accommodate full form)
                     transform: `scale(${scaleFactor})`,
                     transformOrigin: 'center center',
                     display: 'flex',
@@ -407,8 +407,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                       ref={iframeRef}
                       src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                       style={{ 
-                        width: '1100px',
-                        height: '750px',
+                        width: '1000px',
+                        height: '1000px',
                         border: 'none', 
                         display: 'block',
                         flex: '1 1 0%',
