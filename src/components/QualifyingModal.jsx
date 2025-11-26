@@ -260,7 +260,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
-              ? 'max-w-6xl w-[98vw] h-[96vh] max-h-[96vh]' 
+              ? 'w-[98vw] h-[100vh] max-h-[100vh]' 
               : 'max-w-3xl w-full max-h-[90vh]'
           }`}
           style={{ 
@@ -270,9 +270,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
-            maxHeight: currentStep >= questions.length ? '96vh' : '90vh',
+            maxHeight: currentStep >= questions.length ? '100vh' : '90vh',
+            height: currentStep >= questions.length ? '100vh' : 'auto',
             width: currentStep >= questions.length ? '98vw' : 'calc(100% - 2rem)',
-            maxWidth: currentStep >= questions.length ? '96rem' : '48rem'
+            maxWidth: currentStep >= questions.length ? '115.2rem' : '48rem' // Increased by 20% from 96rem (96 * 1.2 = 115.2)
           }}
         >
           {/* Close Button */}
