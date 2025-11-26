@@ -18,72 +18,51 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     }
   }, [isOpen])
 
-  // Function to send drop-off tracking data
+  // Function to send drop-off tracking data with simple format
   const sendDropoffTracking = async (dropoffStage, booked = false) => {
     if (hasTrackedDropoffRef.current) return // Prevent duplicate tracking
     hasTrackedDropoffRef.current = true
 
     const currentTrackingData = getStoredTrackingData()
-    const timeSpent = modalOpenTimeRef.current ? Math.round((Date.now() - modalOpenTimeRef.current) / 1000) : 0
     const questionsCompleted = Object.keys(answers).length
-    const allQuestionsAnswered = questionsCompleted === questions.length
 
-    // Determine completion status and drop-off stage
-    let completionStatus = 'dropped_off'
-    let dropOffStage = dropoffStage
-
+    // Determine drop-off description
+    let dropoffDescription = ''
     if (booked) {
-      completionStatus = 'completed'
-      dropOffStage = 'completed_booking'
-    } else if (allQuestionsAnswered && currentStep >= questions.length) {
-      dropOffStage = 'viewed_booking'
-    } else if (questionsCompleted > 0) {
-      dropOffStage = `question_${questionsCompleted + 1}`
-    } else if (email) {
-      dropOffStage = 'question_1'
+      dropoffDescription = 'Completed booking'
+    } else if (currentStep >= questions.length) {
+      dropoffDescription = 'Viewed booking but did not complete'
+    } else if (questionsCompleted === 0) {
+      dropoffDescription = 'Clicked X on question 1'
+    } else if (questionsCompleted === 1) {
+      dropoffDescription = 'Clicked X on question 2'
+    } else if (questionsCompleted === 2) {
+      dropoffDescription = 'Clicked X on question 3'
+    } else if (questionsCompleted === 3) {
+      dropoffDescription = 'Clicked X on question 4'
     } else {
-      dropOffStage = 'email_only'
+      dropoffDescription = 'Dropped off'
     }
 
-    // Clean, minimal payload - only essential data
+    // Map answer IDs to question numbers
     const payload = {
-      // Core data
-      e: email || '', // email
-      ts: new Date().toISOString(), // timestamp
-      evt: booked ? 'booked' : 'drop', // event_type
-      
-      // Easy notification tags (short names)
-      es: email ? '1' : '0', // email_submitted
-      qc: String(questionsCompleted), // questions_completed
-      tq: String(questions.length), // total_questions
-      b: booked ? '1' : '0', // booked
-      cst: completionStatus, // completion_status
-      dos: dropOffStage, // drop_off_stage
-      
-      // Answers (compact format)
-      ...(Object.keys(answers).length > 0 && { 
-        a: Object.entries(answers).map(([k, v]) => `${k}=${v}`).join('|') // answers as compact string
-      }),
-      
-      // Step and time
-      stp: String(currentStep), // current_step
-      tms: String(timeSpent), // time_spent_seconds
-      
-      // UTM (only if exists, short names)
-      ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }),
-      ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }),
-      ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }),
-      ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }),
-      ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }),
-      
-      // Source param
-      ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }),
-      
-      // Essential tracking only
-      ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
-      lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
-      tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
-      fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
+      Email: email || '',
+      Source: 'hero-section',
+      'UTM Source': currentTrackingData.utm_source || '',
+      'UTM Medium': currentTrackingData.utm_medium || '',
+      'UTM Campaign': currentTrackingData.utm_campaign || '',
+      'UTM Term': currentTrackingData.utm_term || '',
+      'UTM Content': currentTrackingData.utm_content || '',
+      Referrer: currentTrackingData.referrer || 'direct',
+      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
+      Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
+      'Answer to Question 1': answers.revenue_stage || '',
+      'Answer to Question 2': answers.biggest_challenge || '',
+      'Answer to Question 3': answers.primary_channel || '',
+      'Answer to Question 4': answers.timeline || '',
+      Booking: booked ? 'Yes' : 'No',
+      Dropoff: dropoffDescription
     }
 
     try {

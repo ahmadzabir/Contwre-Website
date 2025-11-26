@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import HeroStars from './HeroStars'
 import { storeTrackingData, getStoredTrackingData } from '../utils/utmTracker'
@@ -10,12 +10,91 @@ function Hero() {
   const [submitStatus, setSubmitStatus] = useState(null) // 'success' or 'error'
   const [trackingData, setTrackingData] = useState(null)
   const [showModal, setShowModal] = useState(false)
+  const emailSubmitTimeRef = useRef(null)
+  const timeoutRef = useRef(null)
 
   // Initialize tracking on component mount
   useEffect(() => {
     const data = storeTrackingData()
     setTrackingData(data)
   }, [])
+
+  // Function to send simple tracking payload
+  const sendTracking = useCallback(async (additionalData = {}) => {
+    const currentTrackingData = getStoredTrackingData()
+    
+    const payload = {
+      Email: email || '',
+      Source: 'hero-section',
+      'UTM Source': currentTrackingData.utm_source || '',
+      'UTM Medium': currentTrackingData.utm_medium || '',
+      'UTM Campaign': currentTrackingData.utm_campaign || '',
+      'UTM Term': currentTrackingData.utm_term || '',
+      'UTM Content': currentTrackingData.utm_content || '',
+      Referrer: currentTrackingData.referrer || 'direct',
+      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
+      Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
+      'Answer to Question 1': '',
+      'Answer to Question 2': '',
+      'Answer to Question 3': '',
+      'Answer to Question 4': '',
+      Booking: 'No',
+      Dropoff: '',
+      ...additionalData
+    }
+
+    try {
+      const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+      
+      const responseData = await response.text()
+      console.log('Tracking response:', response.status, responseData)
+      
+      if (!response.ok) {
+        console.error('Webhook error:', response.status, responseData)
+      }
+    } catch (error) {
+      console.error('Error sending tracking:', error)
+    }
+  }, [email])
+
+  // Send tracking when email is submitted but modal doesn't open after 30 seconds
+  const sendEmailOnlyTracking = useCallback(() => {
+    sendTracking({
+      Dropoff: 'Email submitted but did not open popup'
+    })
+  }, [sendTracking])
+
+  // Send tracking after 30 seconds if modal hasn't opened
+  useEffect(() => {
+    if (emailSubmitTimeRef.current && !showModal) {
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      
+      // Set 30 second timeout
+      timeoutRef.current = setTimeout(() => {
+        sendEmailOnlyTracking()
+      }, 30000) // 30 seconds
+    } else if (showModal && timeoutRef.current) {
+      // Modal opened, clear timeout
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [email, showModal, sendEmailOnlyTracking])
 
   const scrollToSection = useCallback((sectionId) => {
     const element = document.getElementById(sectionId)
@@ -25,37 +104,40 @@ function Hero() {
   }, [])
 
   const handleQualifyingSubmit = async (answers) => {
-    // Get the most up-to-date tracking data
-    const currentTrackingData = getStoredTrackingData()
+    // Clear timeout since they completed
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
 
-    // Clean, minimal payload - only essential data
+    const currentTrackingData = getStoredTrackingData()
+    
+    // Map answer IDs to question numbers
+    const answerMap = {
+      revenue_stage: 'Answer to Question 1',
+      biggest_challenge: 'Answer to Question 2',
+      primary_channel: 'Answer to Question 3',
+      timeline: 'Answer to Question 4'
+    }
+
     const payload = {
-      e: email, // email
-      ts: new Date().toISOString(), // timestamp
-      evt: 'qualified', // event_type: qualifying_completed
-      src: 'hero', // source
-      
-      // Answers (compact format)
-      a: Object.entries(answers)
-        .filter(([_, v]) => v) // only include answers with values
-        .map(([k, v]) => `${k}=${v}`)
-        .join('|'), // answers as compact string: "revenue_stage=100k-1m|biggest_challenge=lead_generation"
-      
-      // UTM (only if exists, short names)
-      ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }),
-      ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }),
-      ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }),
-      ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }),
-      ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }),
-      
-      // Source param
-      ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }),
-      
-      // Essential tracking only
-      ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
-      lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
-      tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
-      fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
+      Email: email || '',
+      Source: 'hero-section',
+      'UTM Source': currentTrackingData.utm_source || '',
+      'UTM Medium': currentTrackingData.utm_medium || '',
+      'UTM Campaign': currentTrackingData.utm_campaign || '',
+      'UTM Term': currentTrackingData.utm_term || '',
+      'UTM Content': currentTrackingData.utm_content || '',
+      Referrer: currentTrackingData.referrer || 'direct',
+      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
+      Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
+      'Answer to Question 1': answers.revenue_stage || '',
+      'Answer to Question 2': answers.biggest_challenge || '',
+      'Answer to Question 3': answers.primary_channel || '',
+      'Answer to Question 4': answers.timeline || '',
+      Booking: 'Yes',
+      Dropoff: ''
     }
 
     try {
@@ -89,52 +171,24 @@ function Hero() {
     setIsSubmitting(true)
     setSubmitStatus(null)
 
-    // Get the most up-to-date tracking data
-    const currentTrackingData = getStoredTrackingData()
-
     try {
-      // Clean, minimal payload - only essential data
-      const payload = {
-        e: email, // email
-        ts: new Date().toISOString(), // timestamp
-        evt: 'email', // event_type: email_submitted
-        src: 'hero', // source
-        // UTM (only if exists)
-        ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }), // utm_source
-        ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }), // utm_medium
-        ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }), // utm_campaign
-        ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }), // utm_term
-        ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }), // utm_content
-        // Source param
-        ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }), // source_param
-        // Essential tracking only
-        ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
-        lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
-        tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
-        fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
-      }
-
-      const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
+      // Use the simple tracking function for email submission
+      await sendTracking({
+        // Email submission specific - no answers yet, no booking
+        'Answer to Question 1': '',
+        'Answer to Question 2': '',
+        'Answer to Question 3': '',
+        'Answer to Question 4': '',
+        Booking: 'No',
+        Dropoff: ''
       })
 
-      const responseData = await response.text()
-      console.log('Email submission response:', response.status, responseData)
-
-      if (response.ok) {
-        setSubmitStatus('success')
-        // Open qualifying modal instead of just showing success
-        setShowModal(true)
-        // Don't clear email yet, keep it for the modal
-      } else {
-        console.error('Webhook error:', response.status, responseData)
-        setSubmitStatus('error')
-        setTimeout(() => setSubmitStatus(null), 3000)
-      }
+      setSubmitStatus('success')
+      // Record email submission time for 30-second timeout
+      emailSubmitTimeRef.current = Date.now()
+      // Open qualifying modal instead of just showing success
+      setShowModal(true)
+      // Don't clear email yet, keep it for the modal
     } catch (error) {
       console.error('Error submitting email:', error)
       setSubmitStatus('error')
