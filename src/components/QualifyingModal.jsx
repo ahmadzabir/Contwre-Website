@@ -15,37 +15,66 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   // Prevent body scroll when modal is open and lock scroll position
   useEffect(() => {
     if (isOpen) {
-      // Capture current scroll position
-      scrollPositionRef.current = window.scrollY || document.documentElement.scrollTop
+      // Capture current scroll position BEFORE locking
+      scrollPositionRef.current = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
       
-      // Lock body scroll and prevent scrolling
+      // Lock body scroll and prevent scrolling - this keeps viewport at current position
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
       document.body.style.top = `-${scrollPositionRef.current}px`
+      document.body.style.left = '0'
+      document.body.style.right = '0'
       document.body.style.width = '100%'
       
       // Also prevent scrolling on html element
       document.documentElement.style.overflow = 'hidden'
+      document.documentElement.style.position = 'fixed'
+      document.documentElement.style.top = `-${scrollPositionRef.current}px`
+      document.documentElement.style.left = '0'
+      document.documentElement.style.right = '0'
+      document.documentElement.style.width = '100%'
     } else {
       // Restore scroll position and unlock
+      const scrollY = scrollPositionRef.current
+      
       document.body.style.overflow = ''
       document.body.style.position = ''
       document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
       document.body.style.width = ''
-      document.documentElement.style.overflow = ''
       
-      // Restore scroll position
-      window.scrollTo(0, scrollPositionRef.current)
+      document.documentElement.style.overflow = ''
+      document.documentElement.style.position = ''
+      document.documentElement.style.top = ''
+      document.documentElement.style.left = ''
+      document.documentElement.style.right = ''
+      document.documentElement.style.width = ''
+      
+      // Restore scroll position after a brief delay to ensure styles are cleared
+      setTimeout(() => {
+        window.scrollTo(0, scrollY)
+      }, 0)
     }
     return () => {
       // Cleanup: ensure scroll is restored
+      const scrollY = scrollPositionRef.current
       document.body.style.overflow = ''
       document.body.style.position = ''
       document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
       document.body.style.width = ''
       document.documentElement.style.overflow = ''
-      if (scrollPositionRef.current) {
-        window.scrollTo(0, scrollPositionRef.current)
+      document.documentElement.style.position = ''
+      document.documentElement.style.top = ''
+      document.documentElement.style.left = ''
+      document.documentElement.style.right = ''
+      document.documentElement.style.width = ''
+      if (scrollY) {
+        setTimeout(() => {
+          window.scrollTo(0, scrollY)
+        }, 0)
       }
     }
   }, [isOpen])
@@ -127,12 +156,17 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           bottom: 0,
           width: '100vw',
           height: '100vh',
+          maxWidth: '100vw',
+          maxHeight: '100vh',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 99999,
           pointerEvents: 'auto',
-          overflow: 'auto'
+          overflow: 'hidden', // Changed from 'auto' to 'hidden' to prevent scrolling
+          margin: 0,
+          padding: '1rem',
+          boxSizing: 'border-box'
         }}
       >
         {/* Backdrop */}
@@ -148,7 +182,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             left: 0, 
             right: 0, 
             bottom: 0, 
-            zIndex: 99998
+            width: '100vw',
+            height: '100vh',
+            zIndex: 99998,
+            margin: 0,
+            padding: 0
           }}
         />
 
@@ -167,14 +205,20 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           style={{ 
             position: 'relative',
             zIndex: 99999,
-            margin: 'auto',
+            margin: '0 auto', // Center horizontally
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
-            maxHeight: currentStep >= questions.length ? '100vh' : '90vh',
-            height: currentStep >= questions.length ? '100vh' : 'auto',
+            maxHeight: currentStep >= questions.length ? 'calc(100vh - 2rem)' : '90vh',
+            height: currentStep >= questions.length ? 'calc(100vh - 2rem)' : 'auto',
             width: currentStep >= questions.length ? '60vw' : 'calc(100% - 2rem)',
-            maxWidth: currentStep >= questions.length ? 'none' : '48rem'
+            maxWidth: currentStep >= questions.length ? 'none' : '48rem',
+            // Ensure modal is always visible in viewport
+            transform: 'none', // Override any transforms that might move it
+            top: 'auto',
+            left: 'auto',
+            right: 'auto',
+            bottom: 'auto'
           }}
         >
           {/* Close Button */}
