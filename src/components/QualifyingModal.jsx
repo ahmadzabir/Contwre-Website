@@ -280,33 +280,49 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                   </h2>
                 </div>
 
-                {/* Iframe Container - Simple and Clean */}
+                {/* Iframe Container - Scaled Down 30% */}
                 <div 
                   className="flex-1 w-full rounded-xl overflow-hidden border border-white/10 bg-white/5" 
                   style={{ 
                     flex: '1 1 0%',
                     minHeight: 0,
                     display: 'flex',
-                    alignItems: 'stretch',
-                    justifyContent: 'stretch',
-                    position: 'relative'
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    overflow: 'auto'
                   }}
                 >
-                  <iframe
-                    src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
-                    style={{ 
-                      width: '100%',
-                      height: '100%',
-                      border: 'none',
-                      display: 'block',
-                      minHeight: 0,
-                      flex: '1 1 0%'
+                  {/* Wrapper to scale iframe down by 30% */}
+                  <div
+                    style={{
+                      transform: 'scale(0.7)',
+                      transformOrigin: 'top center',
+                      width: '142.86%', // 100% / 0.7 to maintain full width when scaled
+                      height: '142.86%', // 100% / 0.7 to maintain full height when scaled
+                      position: 'absolute',
+                      top: 0,
+                      left: '50%',
+                      marginLeft: '-71.43%', // Center the scaled content
+                      display: 'flex',
+                      alignItems: 'stretch'
                     }}
-                    scrolling="yes"
-                    allow="fullscreen"
-                    id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
-                    className="rounded-xl"
-                  />
+                  >
+                    <iframe
+                      src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
+                      style={{ 
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        display: 'block',
+                        minHeight: 0
+                      }}
+                      scrolling="yes"
+                      allow="fullscreen"
+                      id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
+                      className="rounded-xl"
+                    />
+                  </div>
                 </div>
 
                 {/* Button */}
