@@ -62,6 +62,10 @@ export default defineConfig({
     exclude: ['@react-three/fiber', '@react-three/drei']
   },
   esbuild: {
-    drop: ['console', 'debugger']
+    drop: ['console', 'debugger'],
+    legalComments: 'none',
+    minifyIdentifiers: true,
+    minifySyntax: true,
+    minifyWhitespace: true
   }
 })

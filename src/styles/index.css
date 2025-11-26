@@ -50,6 +50,32 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
   overflow-x: hidden;
+  /* Performance optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* GPU acceleration for smooth scrolling */
+body {
+  transform: translateZ(0);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Performance optimizations for animations */
+* {
+  /* Use GPU acceleration for transforms */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize motion components */
+[class*="motion-"],
+[data-framer-component] {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Respect user's motion preferences */
@@ -119,7 +145,16 @@ button, a, [role="button"], input[type="submit"], input[type="button"] {
   /* Optimize rendering */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Only apply GPU acceleration to animated elements, not all elements */
+}
+
+/* GPU acceleration only for animated elements */
+[class*="motion-"],
+[data-framer-component],
+canvas,
+.motion-div {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* Custom scrollbar for better visibility */

@@ -43,7 +43,7 @@ function FounderSection() {
                 <img 
                   loading="lazy"
                   src="/assets/founder-together.jpg" 
-                  alt="Ahmad Zabir & Zahra Batool"
+                  alt="Ahmad Zabir and Zahra Batool - Co-founders of Contwre GTM Agency"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-150"
                 />
               </div>

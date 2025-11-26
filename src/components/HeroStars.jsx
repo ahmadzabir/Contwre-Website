@@ -91,24 +91,53 @@ function HeroStars() {
     }
   }
 
-  // Handle scroll - store in ref, no re-renders
+  // Handle scroll - store in ref, no re-renders, optimized with RAF
   useEffect(() => {
     // Initial measurement
     updateSectionMeasurements()
     
+    let rafId = null
+    let scrollTimeout = null
     const handleScroll = () => {
-      scrollYRef.current = window.scrollY
-      // Update measurements less frequently (every 100ms)
-      if (!handleScroll.lastUpdate || Date.now() - handleScroll.lastUpdate > 100) {
+      if (rafId) return // Prevent multiple RAF calls
+      rafId = requestAnimationFrame(() => {
+        scrollYRef.current = window.scrollY
+        rafId = null
+      })
+      // Update measurements less frequently (every 200ms for better performance)
+      if (!handleScroll.lastUpdate || Date.now() - handleScroll.lastUpdate > 200) {
         updateSectionMeasurements()
         handleScroll.lastUpdate = Date.now()
       }
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', updateSectionMeasurements, { passive: true })
+    
+    // Throttle scroll to reduce calculations
+    const throttledScroll = () => {
+      if (scrollTimeout) return
+      scrollTimeout = setTimeout(() => {
+        handleScroll()
+        scrollTimeout = null
+      }, 16) // ~60fps max
+    }
+    
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    
+    // Throttle resize as well
+    let resizeTimeout = null
+    const throttledResize = () => {
+      if (resizeTimeout) return
+      resizeTimeout = setTimeout(() => {
+        updateSectionMeasurements()
+        resizeTimeout = null
+      }, 100)
+    }
+    window.addEventListener('resize', throttledResize, { passive: true })
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', updateSectionMeasurements)
+      window.removeEventListener('scroll', throttledScroll)
+      window.removeEventListener('resize', throttledResize)
+      if (rafId) cancelAnimationFrame(rafId)
+      if (scrollTimeout) clearTimeout(scrollTimeout)
+      if (resizeTimeout) clearTimeout(resizeTimeout)
     }
   }, [])
 
@@ -127,7 +156,7 @@ function HeroStars() {
     window.addEventListener('resize', resize, { passive: true })
 
     let lastFrameTime = 0
-    const targetFPS = 30 // Increased to 30fps for smoother star movement
+    const targetFPS = 24 // Optimized to 24fps for better performance while maintaining smoothness
     const frameInterval = 1000 / targetFPS
 
     const animate = (currentTime) => {
@@ -322,28 +351,31 @@ function HeroStars() {
         
         // Draw star - optimized rendering for better performance
         if (finalOpacity > 0.05) { // Only skip very transparent stars
-          // Enhanced rendering with larger stars and better glow
+          // Batch similar operations for better performance
+          ctx.save()
           ctx.globalAlpha = finalOpacity
           ctx.fillStyle = star.color
-          // Increased shadow blur for more prominent stars
-          ctx.shadowBlur = star.size * 3.5
+          // Reduced shadow blur for better performance
+          ctx.shadowBlur = star.size * 2.5
           ctx.shadowColor = star.color
           
-          // Draw star with glow
+          // Draw star with glow - single path
           ctx.beginPath()
           ctx.arc(finalX, finalY, star.size / 2, 0, Math.PI * 2)
           ctx.fill()
           
-          // Draw bright center core for larger stars
-          ctx.globalAlpha = Math.min(finalOpacity * 1.2, 1)
-          ctx.shadowBlur = 0
-          ctx.fillStyle = '#FFFFFF'
-          const coreSize = star.size * 0.6
-          ctx.beginPath()
-          ctx.arc(finalX, finalY, coreSize / 2, 0, Math.PI * 2)
-          ctx.fill()
+          // Draw bright center core only for larger stars (performance optimization)
+          if (star.size > 2) {
+            ctx.globalAlpha = Math.min(finalOpacity * 1.1, 1)
+            ctx.shadowBlur = 0
+            ctx.fillStyle = '#FFFFFF'
+            const coreSize = star.size * 0.5
+            ctx.beginPath()
+            ctx.arc(finalX, finalY, coreSize / 2, 0, Math.PI * 2)
+            ctx.fill()
+          }
           
-          ctx.shadowBlur = 0 // Reset shadow
+          ctx.restore()
         }
       })
       
@@ -372,7 +404,9 @@ function HeroStars() {
         left: 0,
         width: '100vw',
         height: '100vh',
-        willChange: 'contents',
+        willChange: 'transform',
+        transform: 'translateZ(0)', // Force GPU acceleration
+        backfaceVisibility: 'hidden',
       }}
     />
   )

@@ -64,7 +64,7 @@ function Services() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "-100px" }}
           className="mb-16 text-center"
         >
           <p className="text-emerald-400 font-bold text-sm tracking-[0.12em] uppercase mb-4">

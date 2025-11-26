@@ -9,6 +9,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const scrollPositionRef = useRef(0)
   const modalOpenTimeRef = useRef(null)
   const hasTrackedDropoffRef = useRef(false)
+  const answersRef = useRef({})
+  const currentStepRef = useRef(0)
 
   // Track modal open time
   useEffect(() => {
@@ -19,50 +21,31 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   }, [isOpen])
 
   // Function to send drop-off tracking data with simple format
-  const sendDropoffTracking = async (dropoffStage, booked = false) => {
+  const sendDropoffTracking = async (dropoffDescription, booked = false, answersToUse = null) => {
     if (hasTrackedDropoffRef.current) return // Prevent duplicate tracking
     hasTrackedDropoffRef.current = true
 
     const currentTrackingData = getStoredTrackingData()
-    const questionsCompleted = Object.keys(answers).length
+    // Use provided answers or fall back to current state
+    const answersForPayload = answersToUse !== null ? answersToUse : answers
 
-    // Determine drop-off description
-    let dropoffDescription = ''
-    if (booked) {
-      dropoffDescription = 'Completed booking'
-    } else if (currentStep >= questions.length) {
-      dropoffDescription = 'Viewed booking but did not complete'
-    } else if (questionsCompleted === 0) {
-      dropoffDescription = 'Clicked X on question 1'
-    } else if (questionsCompleted === 1) {
-      dropoffDescription = 'Clicked X on question 2'
-    } else if (questionsCompleted === 2) {
-      dropoffDescription = 'Clicked X on question 3'
-    } else if (questionsCompleted === 3) {
-      dropoffDescription = 'Clicked X on question 4'
-    } else {
-      dropoffDescription = 'Dropped off'
-    }
-
-    // Map answer IDs to question numbers
+    // Map answer IDs to question numbers - match exact payload format
     const payload = {
       Email: email || '',
       Source: 'hero-section',
-      UTM: {
-        Source: currentTrackingData.utm_source || '',
-        Medium: currentTrackingData.utm_medium || '',
-        Campaign: currentTrackingData.utm_campaign || '',
-        Term: currentTrackingData.utm_term || '',
-        Content: currentTrackingData.utm_content || ''
-      },
+      'UTM Source': currentTrackingData.utm_source || '',
+      'UTM Medium': currentTrackingData.utm_medium || '',
+      'UTM Campaign': currentTrackingData.utm_campaign || '',
+      'UTM Term': currentTrackingData.utm_term || '',
+      'UTM Content': currentTrackingData.utm_content || '',
       Referrer: currentTrackingData.referrer || 'direct',
-      UserAgent: currentTrackingData.userAgent || navigator.userAgent,
+      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
       Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      FirstVisit: currentTrackingData.firstVisit ? 'Yes' : 'No',
-      AnswerToQuestion1: answers.revenue_stage || '',
-      AnswerToQuestion2: answers.biggest_challenge || '',
-      AnswerToQuestion3: answers.primary_channel || '',
-      AnswerToQuestion4: answers.timeline || '',
+      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
+      'Answer to Question 1': answersForPayload.revenue_stage || '',
+      'Answer to Question 2': answersForPayload.biggest_challenge || '',
+      'Answer to Question 3': answersForPayload.primary_channel || '',
+      'Answer to Question 4': answersForPayload.timeline || '',
       Booking: booked ? 'Yes' : 'No',
       Dropoff: dropoffDescription
     }
@@ -204,7 +187,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   ]
 
   const handleAnswer = (questionId, value) => {
-    setAnswers({ ...answers, [questionId]: value })
+    // Update answers state immediately
+    const updatedAnswers = { ...answers, [questionId]: value }
+    setAnswers(updatedAnswers)
+    
+    // Move to next step after a brief delay
     setTimeout(() => {
       if (currentStep < questions.length - 1) {
         setCurrentStep(currentStep + 1)
@@ -215,31 +202,46 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     }, 300)
   }
 
+  // Update refs when state changes to capture latest values
+  useEffect(() => {
+    answersRef.current = answers
+    currentStepRef.current = currentStep
+  }, [answers, currentStep])
+
   const handleComplete = async () => {
-    // Track booking completion
-    await sendDropoffTracking('completed_booking', true)
+    // Track booking completion with current answers
+    await sendDropoffTracking('Completed booking', true, answers)
     
     // Submit all data including answers
     onSubmit(answers)
     onClose()
   }
-
-  // Track drop-off when modal closes
+  
   const handleClose = () => {
     // Only track if we haven't already tracked a completion
     if (!hasTrackedDropoffRef.current) {
-      // Determine drop-off stage
-      let dropoffStage = 'email_only'
-      if (currentStep >= questions.length) {
-        dropoffStage = 'viewed_booking'
-      } else if (Object.keys(answers).length > 0) {
-        dropoffStage = `question_${Object.keys(answers).length + 1}`
-      } else if (email) {
-        dropoffStage = 'question_1'
+      // Use refs to get latest values (avoid stale closure)
+      const latestAnswers = answersRef.current
+      const latestStep = currentStepRef.current
+      
+      // Determine drop-off stage based on latest state
+      let dropoffDescription = ''
+      if (latestStep >= questions.length) {
+        dropoffDescription = 'Viewed booking but did not complete'
+      } else if (Object.keys(latestAnswers).length === 0) {
+        dropoffDescription = 'Clicked X on question 1'
+      } else if (Object.keys(latestAnswers).length === 1) {
+        dropoffDescription = 'Clicked X on question 2'
+      } else if (Object.keys(latestAnswers).length === 2) {
+        dropoffDescription = 'Clicked X on question 3'
+      } else if (Object.keys(latestAnswers).length === 3) {
+        dropoffDescription = 'Clicked X on question 4'
+      } else {
+        dropoffDescription = 'Dropped off'
       }
       
-      // Send drop-off tracking (async, don't wait)
-      sendDropoffTracking(dropoffStage, false)
+      // Send drop-off tracking with latest answers (async, don't wait)
+      sendDropoffTracking(dropoffDescription, false, latestAnswers)
     }
     
     // Close modal

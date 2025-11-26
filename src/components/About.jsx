@@ -68,7 +68,7 @@ function About() {
             <div className="relative overflow-hidden">
               <img 
                 src="/assets/engine-gif.gif"
-                alt="Contwre Engine System"
+                alt="Contwre GTM Engine System - End-to-end revenue growth system showing integration of outbound, performance marketing, and sales enablement"
                 className="w-full aspect-square object-contain rounded-xl"
                 loading="eager"
                 decoding="async"

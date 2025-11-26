@@ -126,7 +126,7 @@ function Comparison() {
                 <img 
                   loading="lazy"
                   src="/assets/contwre-logo-white.png" 
-                  alt="Contwre Logo" 
+                  alt="Contwre GTM Agency - Full-service growth marketing agency" 
                   className="h-8 sm:h-10 md:h-12 w-auto mx-auto"
                 />
               </div>

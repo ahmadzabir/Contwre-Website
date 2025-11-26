@@ -33,14 +33,33 @@ export const useScrollAnimation = (threshold = 0.1) => {
 
 export const useParallax = () => {
   const [offset, setOffset] = useState(0)
+  const rafRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      setOffset(window.pageYOffset)
+      if (rafRef.current) return // Prevent multiple RAF calls
+      rafRef.current = requestAnimationFrame(() => {
+        setOffset(window.pageYOffset)
+        rafRef.current = null
+      })
     }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    // Throttle scroll events
+    let scrollTimeout = null
+    const throttledScroll = () => {
+      if (scrollTimeout) return
+      scrollTimeout = setTimeout(() => {
+        handleScroll()
+        scrollTimeout = null
+      }, 16) // ~60fps max
+    }
+
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', throttledScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      if (scrollTimeout) clearTimeout(scrollTimeout)
+    }
   }, [])
 
   return offset

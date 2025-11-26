@@ -148,7 +148,7 @@ function Footer() {
                   <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-emerald-400/30 flex-shrink-0">
                     <img 
                       src="/assets/founder-together.jpg" 
-                      alt="Ahmad & Zahra"
+                      alt="Ahmad Zabir and Zahra Batool - Contwre GTM Agency Founders"
                       className="w-full h-full object-cover"
                     />
                   </div>

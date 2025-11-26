@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from 'react'
+import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { motion } from 'framer-motion'
 
 // Throttle function for performance
@@ -19,18 +19,26 @@ function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
 
+  const rafRef = useRef(null)
   const handleScroll = useCallback(() => {
-    const scrollY = window.scrollY
-    setIsScrolled(scrollY > 10)
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-    setScrollProgress(totalHeight > 0 ? scrollY / totalHeight : 0)
+    if (rafRef.current) return // Prevent multiple RAF calls
+    rafRef.current = requestAnimationFrame(() => {
+      const scrollY = window.scrollY
+      setIsScrolled(scrollY > 10)
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight
+      setScrollProgress(totalHeight > 0 ? scrollY / totalHeight : 0)
+      rafRef.current = null
+    })
   }, [])
 
   useEffect(() => {
-    const throttledScroll = throttle(handleScroll, 100) // Reduced frequency for better performance
+    const throttledScroll = throttle(handleScroll, 16) // ~60fps max for smoother updates
     window.addEventListener('scroll', throttledScroll, { passive: true })
     handleScroll() // Initial call
-    return () => window.removeEventListener('scroll', throttledScroll)
+    return () => {
+      window.removeEventListener('scroll', throttledScroll)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
   }, [handleScroll])
 
   const scrollToSection = useCallback((sectionId) => {
@@ -70,7 +78,7 @@ function Header() {
               <img 
                 loading="lazy"
                 src="/assets/contwre-logo-white.png"
-                alt="Contwre Logo"
+                alt="Contwre - GTM Agency for Predictable Revenue Growth"
                 className="h-6 sm:h-8 w-auto"
               />
             </motion.a>
@@ -102,9 +110,11 @@ function Header() {
         <div
           className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500 rounded-full shadow-lg transition-transform duration-150 ease-out"
           style={{
-            transform: `scaleX(${scrollProgress})`,
+            transform: `scaleX(${scrollProgress}) translateZ(0)`,
             transformOrigin: "left",
-            boxShadow: "0 0 10px rgba(16, 185, 129, 0.5)"
+            boxShadow: "0 0 10px rgba(16, 185, 129, 0.5)",
+            willChange: 'transform',
+            backfaceVisibility: 'hidden'
           }}
         />
       </div>
