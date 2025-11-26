@@ -130,10 +130,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         const availableHeight = containerRect.height
 
         // GHL (GoHighLevel) calendar iframes don't have fixed dimensions
-        // Recommended height is 905px to 1300px, with width at 100% for responsiveness
-        // Using 1000px width and 1100px height as a good starting point for full calendar display
+        // Increased height by 40%: 1100px * 1.4 = 1540px
+        // Using 1000px width and 1540px height for larger, more visible calendar
         let iframeNaturalWidth = 1000
-        let iframeNaturalHeight = 1100 // GHL calendars typically need 905-1300px height
+        let iframeNaturalHeight = 1540 // Increased by 40% from 1100px (1100 * 1.4 = 1540)
 
         // Try to access iframe dimensions if same-origin (unlikely but worth trying)
         try {
@@ -142,14 +142,14 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             const body = iframeDoc.body
             if (body) {
               iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1000)
-              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1100)
+              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1540)
             }
           }
         } catch (e) {
-          // Cross-origin - use GHL recommended dimensions
-          // GHL calendars work best with 1000px width and 1100px height
+          // Cross-origin - use GHL recommended dimensions with 40% height increase
+          // GHL calendars work best with 1000px width and 1540px height (40% increase)
           iframeNaturalWidth = 1000
-          iframeNaturalHeight = 1100
+          iframeNaturalHeight = 1540
         }
 
         // Calculate scale factors for both dimensions
@@ -157,8 +157,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         const scaleY = availableHeight / iframeNaturalHeight
 
         // Use the smaller scale to ensure it fits in both dimensions
-        // Use 0.92 to give slight breathing room while maximizing size (GHL recommendation)
-        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.92
+        // Use 0.95 to maximize size while ensuring it fits
+        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.95
 
         setScaleFactor(Math.max(calculatedScale, 0.4)) // Minimum scale of 0.4
       }
@@ -381,16 +381,18 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                     flex: '1 1 0%',
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 'calc(100% - 40px)', // Reduced space for header and button
+                    height: 'calc(100% - 50px)', // Space for header and button
                     position: 'relative',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    // Match aspect ratio of iframe: 1000/1540 = 0.649
+                    aspectRatio: '1000 / 1540'
                   }}
                 >
                   <div style={{
                     width: '1000px', // GHL calendar natural width
-                    height: '1100px', // GHL calendar natural height (905-1300px range, using 1100px)
+                    height: '1540px', // GHL calendar natural height (increased by 40% from 1100px)
                     transform: `scale(${scaleFactor})`,
                     transformOrigin: 'center center',
                     display: 'flex',
@@ -402,7 +404,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                       src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
                       style={{ 
                         width: '1000px',
-                        height: '1100px',
+                        height: '1540px', // Increased by 40% from 1100px
                         border: 'none', 
                         display: 'block',
                         flex: '1 1 0%',
