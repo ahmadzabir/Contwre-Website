@@ -91,23 +91,27 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   useEffect(() => {
     if (isOpen) {
       // Capture current scroll position BEFORE locking
-      scrollPositionRef.current = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+      const scrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop
+      scrollPositionRef.current = scrollY
       
       // Lock body scroll and prevent scrolling - this keeps viewport at current position
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollPositionRef.current}px`
-      document.body.style.left = '0'
-      document.body.style.right = '0'
-      document.body.style.width = '100%'
-      
-      // Also prevent scrolling on html element
-      document.documentElement.style.overflow = 'hidden'
-      document.documentElement.style.position = 'fixed'
-      document.documentElement.style.top = `-${scrollPositionRef.current}px`
-      document.documentElement.style.left = '0'
-      document.documentElement.style.right = '0'
-      document.documentElement.style.width = '100%'
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
+        document.body.style.overflow = 'hidden'
+        document.body.style.position = 'fixed'
+        document.body.style.top = `-${scrollY}px`
+        document.body.style.left = '0'
+        document.body.style.right = '0'
+        document.body.style.width = '100%'
+        
+        // Also prevent scrolling on html element
+        document.documentElement.style.overflow = 'hidden'
+        document.documentElement.style.position = 'fixed'
+        document.documentElement.style.top = `-${scrollY}px`
+        document.documentElement.style.left = '0'
+        document.documentElement.style.right = '0'
+        document.documentElement.style.width = '100%'
+      })
     } else {
       // Restore scroll position and unlock
       const scrollY = scrollPositionRef.current
@@ -263,10 +267,16 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           justifyContent: 'center',
           zIndex: 99999,
           pointerEvents: 'auto',
-          overflow: 'hidden', // Changed from 'auto' to 'hidden' to prevent scrolling
+          overflow: 'hidden',
           margin: 0,
           padding: '1rem',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          // Ensure it's always in viewport, independent of scroll lock
+          transform: 'translateZ(0)',
+          willChange: 'auto',
+          // Force viewport positioning
+          position: 'fixed',
+          inset: 0
         }}
       >
         {/* Backdrop */}
@@ -305,7 +315,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           style={{ 
             position: 'relative',
             zIndex: 99999,
-            margin: '0 auto', // Center horizontally
+            margin: 'auto', // Center both horizontally and vertically
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
@@ -313,12 +323,9 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             height: currentStep >= questions.length ? 'calc(100vh - 2rem)' : 'auto',
             width: currentStep >= questions.length ? '60vw' : 'calc(100% - 2rem)',
             maxWidth: currentStep >= questions.length ? 'none' : '48rem',
-            // Ensure modal is always visible in viewport
-            transform: 'none', // Override any transforms that might move it
-            top: 'auto',
-            left: 'auto',
-            right: 'auto',
-            bottom: 'auto'
+            // Ensure modal is always centered in viewport
+            alignSelf: 'center',
+            justifySelf: 'center'
           }}
         >
           {/* Close Button */}
