@@ -26,19 +26,21 @@ function Hero() {
     const payload = {
       Email: email || '',
       Source: 'hero-section',
-      'UTM Source': currentTrackingData.utm_source || '',
-      'UTM Medium': currentTrackingData.utm_medium || '',
-      'UTM Campaign': currentTrackingData.utm_campaign || '',
-      'UTM Term': currentTrackingData.utm_term || '',
-      'UTM Content': currentTrackingData.utm_content || '',
+      UTM: {
+        Source: currentTrackingData.utm_source || '',
+        Medium: currentTrackingData.utm_medium || '',
+        Campaign: currentTrackingData.utm_campaign || '',
+        Term: currentTrackingData.utm_term || '',
+        Content: currentTrackingData.utm_content || ''
+      },
       Referrer: currentTrackingData.referrer || 'direct',
-      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
+      UserAgent: currentTrackingData.userAgent || navigator.userAgent,
       Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
-      'Answer to Question 1': '',
-      'Answer to Question 2': '',
-      'Answer to Question 3': '',
-      'Answer to Question 4': '',
+      FirstVisit: currentTrackingData.firstVisit ? 'Yes' : 'No',
+      AnswerToQuestion1: '',
+      AnswerToQuestion2: '',
+      AnswerToQuestion3: '',
+      AnswerToQuestion4: '',
       Booking: 'No',
       Dropoff: '',
       ...additionalData
@@ -123,19 +125,21 @@ function Hero() {
     const payload = {
       Email: email || '',
       Source: 'hero-section',
-      'UTM Source': currentTrackingData.utm_source || '',
-      'UTM Medium': currentTrackingData.utm_medium || '',
-      'UTM Campaign': currentTrackingData.utm_campaign || '',
-      'UTM Term': currentTrackingData.utm_term || '',
-      'UTM Content': currentTrackingData.utm_content || '',
+      UTM: {
+        Source: currentTrackingData.utm_source || '',
+        Medium: currentTrackingData.utm_medium || '',
+        Campaign: currentTrackingData.utm_campaign || '',
+        Term: currentTrackingData.utm_term || '',
+        Content: currentTrackingData.utm_content || ''
+      },
       Referrer: currentTrackingData.referrer || 'direct',
-      'User Agent': currentTrackingData.userAgent || navigator.userAgent,
+      UserAgent: currentTrackingData.userAgent || navigator.userAgent,
       Timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      'First Visit': currentTrackingData.firstVisit ? 'Yes' : 'No',
-      'Answer to Question 1': answers.revenue_stage || '',
-      'Answer to Question 2': answers.biggest_challenge || '',
-      'Answer to Question 3': answers.primary_channel || '',
-      'Answer to Question 4': answers.timeline || '',
+      FirstVisit: currentTrackingData.firstVisit ? 'Yes' : 'No',
+      AnswerToQuestion1: answers.revenue_stage || '',
+      AnswerToQuestion2: answers.biggest_challenge || '',
+      AnswerToQuestion3: answers.primary_channel || '',
+      AnswerToQuestion4: answers.timeline || '',
       Booking: 'Yes',
       Dropoff: ''
     }
@@ -175,10 +179,10 @@ function Hero() {
       // Use the simple tracking function for email submission
       await sendTracking({
         // Email submission specific - no answers yet, no booking
-        'Answer to Question 1': '',
-        'Answer to Question 2': '',
-        'Answer to Question 3': '',
-        'Answer to Question 4': '',
+        AnswerToQuestion1: '',
+        AnswerToQuestion2: '',
+        AnswerToQuestion3: '',
+        AnswerToQuestion4: '',
         Booking: 'No',
         Dropoff: ''
       })
