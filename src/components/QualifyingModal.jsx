@@ -161,7 +161,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
-              ? 'w-[100vw] h-[100vh]' 
+              ? 'w-[60vw] h-[100vh]' 
               : 'max-w-3xl w-full max-h-[90vh]'
           }`}
           style={{ 
@@ -173,7 +173,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             pointerEvents: 'auto',
             maxHeight: currentStep >= questions.length ? '100vh' : '90vh',
             height: currentStep >= questions.length ? '100vh' : 'auto',
-            width: currentStep >= questions.length ? '100vw' : 'calc(100% - 2rem)',
+            width: currentStep >= questions.length ? '60vw' : 'calc(100% - 2rem)',
             maxWidth: currentStep >= questions.length ? 'none' : '48rem'
           }}
         >
