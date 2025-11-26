@@ -45,30 +45,31 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
       dropOffStage = 'email_only'
     }
 
+    // Build payload, removing null/undefined values and converting to strings where needed
     const payload = {
       // Easy notification tags
-      email_submitted: !!email,
-      questions_completed: questionsCompleted,
-      total_questions: questions.length,
-      booked: booked,
+      email_submitted: String(!!email),
+      questions_completed: String(questionsCompleted),
+      total_questions: String(questions.length),
+      booked: String(booked),
       completion_status: completionStatus,
       drop_off_stage: dropOffStage,
       
       // Detailed data
-      email: email || null,
-      answers: answers,
-      current_step: currentStep,
-      time_spent_seconds: timeSpent,
+      email: email || '',
+      answers: JSON.stringify(answers),
+      current_step: String(currentStep),
+      time_spent_seconds: String(timeSpent),
       
-      // UTM Parameters
-      utm_source: currentTrackingData.utm_source || null,
-      utm_medium: currentTrackingData.utm_medium || null,
-      utm_campaign: currentTrackingData.utm_campaign || null,
-      utm_term: currentTrackingData.utm_term || null,
-      utm_content: currentTrackingData.utm_content || null,
+      // UTM Parameters (only include if they exist)
+      ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
+      ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
+      ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
+      ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
+      ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
       
       // Additional source tracking
-      source_param: currentTrackingData.source || null,
+      ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
       
       // Referrer information
       referrer: currentTrackingData.referrer || 'direct',
@@ -76,11 +77,11 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
       
       // Device and session info
       user_agent: currentTrackingData.userAgent || navigator.userAgent,
-      screen_width: currentTrackingData.screenWidth || window.screen.width,
-      screen_height: currentTrackingData.screenHeight || window.screen.height,
+      screen_width: String(currentTrackingData.screenWidth || window.screen.width),
+      screen_height: String(currentTrackingData.screenHeight || window.screen.height),
       language: currentTrackingData.language || navigator.language,
       timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      first_visit: currentTrackingData.firstVisit || false,
+      first_visit: String(currentTrackingData.firstVisit || false),
       
       // Page context
       page_url: window.location.href,
@@ -90,14 +91,20 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     }
 
     try {
-      await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
+      const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
       })
-      console.log('Drop-off tracking sent:', dropOffStage)
+      
+      const responseData = await response.text()
+      console.log('Drop-off tracking response:', response.status, responseData)
+      
+      if (!response.ok) {
+        console.error('Webhook error:', response.status, responseData)
+      }
     } catch (error) {
       console.error('Error sending drop-off tracking:', error)
     }

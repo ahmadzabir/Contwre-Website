@@ -28,46 +28,56 @@ function Hero() {
     // Get the most up-to-date tracking data
     const currentTrackingData = getStoredTrackingData()
 
+    // Build payload, only including fields with values (no nulls)
     const payload = {
       email: email,
       timestamp: new Date().toISOString(),
-      source: 'hero-section',
-      // Qualifying answers
-      revenue_stage: answers.revenue_stage || null,
-      biggest_challenge: answers.biggest_challenge || null,
-      primary_channel: answers.primary_channel || null,
-      timeline: answers.timeline || null,
-      // UTM Parameters
-      utm_source: currentTrackingData.utm_source || null,
-      utm_medium: currentTrackingData.utm_medium || null,
-      utm_campaign: currentTrackingData.utm_campaign || null,
-      utm_term: currentTrackingData.utm_term || null,
-      utm_content: currentTrackingData.utm_content || null,
+      source: 'hero-section-qualified',
+      event_type: 'qualifying_completed',
+      // Qualifying answers (only include if they exist)
+      ...(answers.revenue_stage && { revenue_stage: String(answers.revenue_stage) }),
+      ...(answers.biggest_challenge && { biggest_challenge: String(answers.biggest_challenge) }),
+      ...(answers.primary_channel && { primary_channel: String(answers.primary_channel) }),
+      ...(answers.timeline && { timeline: String(answers.timeline) }),
+      // UTM Parameters (only include if they exist)
+      ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
+      ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
+      ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
+      ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
+      ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
       // Additional source tracking
-      source_param: currentTrackingData.source || null,
+      ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
       // Referrer information
       referrer: currentTrackingData.referrer || 'direct',
       landing_page: currentTrackingData.landingPage || window.location.href,
       // Device and session info
       user_agent: currentTrackingData.userAgent || navigator.userAgent,
-      screen_width: currentTrackingData.screenWidth || window.screen.width,
-      screen_height: currentTrackingData.screenHeight || window.screen.height,
+      screen_width: String(currentTrackingData.screenWidth || window.screen.width),
+      screen_height: String(currentTrackingData.screenHeight || window.screen.height),
       language: currentTrackingData.language || navigator.language,
       timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      first_visit: currentTrackingData.firstVisit || false,
+      first_visit: String(currentTrackingData.firstVisit || false),
       // Page context
       page_url: window.location.href,
       page_path: window.location.pathname
     }
 
     try {
-      await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
+      const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload)
       })
+      
+      const responseData = await response.text()
+      console.log('Qualifying submission response:', response.status, responseData)
+      
+      if (!response.ok) {
+        console.error('Webhook error:', response.status, responseData)
+      }
+      
       // Clear email after successful submission
       setEmail('')
     } catch (error) {
@@ -87,31 +97,33 @@ function Hero() {
     const currentTrackingData = getStoredTrackingData()
 
     try {
+      // Build payload, only including fields with values (no nulls)
       const payload = {
         email: email,
         timestamp: new Date().toISOString(),
         source: 'hero-section',
-        // UTM Parameters
-        utm_source: currentTrackingData.utm_source || null,
-        utm_medium: currentTrackingData.utm_medium || null,
-        utm_campaign: currentTrackingData.utm_campaign || null,
-        utm_term: currentTrackingData.utm_term || null,
-        utm_content: currentTrackingData.utm_content || null,
+        // UTM Parameters (only include if they exist)
+        ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
+        ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
+        ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
+        ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
+        ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
         // Additional source tracking
-        source_param: currentTrackingData.source || null,
+        ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
         // Referrer information
         referrer: currentTrackingData.referrer || 'direct',
         landing_page: currentTrackingData.landingPage || window.location.href,
         // Device and session info
         user_agent: currentTrackingData.userAgent || navigator.userAgent,
-        screen_width: currentTrackingData.screenWidth || window.screen.width,
-        screen_height: currentTrackingData.screenHeight || window.screen.height,
+        screen_width: String(currentTrackingData.screenWidth || window.screen.width),
+        screen_height: String(currentTrackingData.screenHeight || window.screen.height),
         language: currentTrackingData.language || navigator.language,
         timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-        first_visit: currentTrackingData.firstVisit || false,
+        first_visit: String(currentTrackingData.firstVisit || false),
         // Page context
         page_url: window.location.href,
-        page_path: window.location.pathname
+        page_path: window.location.pathname,
+        event_type: 'email_submitted'
       }
 
       const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
@@ -122,12 +134,16 @@ function Hero() {
         body: JSON.stringify(payload)
       })
 
+      const responseData = await response.text()
+      console.log('Email submission response:', response.status, responseData)
+
       if (response.ok) {
         setSubmitStatus('success')
         // Open qualifying modal instead of just showing success
         setShowModal(true)
         // Don't clear email yet, keep it for the modal
       } else {
+        console.error('Webhook error:', response.status, responseData)
         setSubmitStatus('error')
         setTimeout(() => setSubmitStatus(null), 3000)
       }

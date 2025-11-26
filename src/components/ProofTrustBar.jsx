@@ -164,8 +164,8 @@ function ProofTrustBar() {
         /* Slower animation on mobile devices */
         @media (max-width: 768px) {
           .carousel-track {
-            animation: infiniteScroll 35s linear infinite;
-            gap: 3rem;
+            animation: infiniteScroll 60s linear infinite;
+            gap: 2.5rem;
           }
           
           .carousel-item {
@@ -177,8 +177,8 @@ function ProofTrustBar() {
         /* Even slower on very small screens */
         @media (max-width: 640px) {
           .carousel-track {
-            animation: infiniteScroll 40s linear infinite;
-            gap: 2.5rem;
+            animation: infiniteScroll 70s linear infinite;
+            gap: 2rem;
           }
           
           .carousel-item {
