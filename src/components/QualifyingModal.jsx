@@ -260,7 +260,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           onClick={(e) => e.stopPropagation()}
           className={`relative card-glass rounded-3xl shadow-2xl border border-white/10 flex flex-col ${
             currentStep >= questions.length 
-              ? 'w-[98vw] h-[100vh] max-h-[100vh]' 
+              ? 'w-[100vw] h-[100vh]' 
               : 'max-w-3xl w-full max-h-[90vh]'
           }`}
           style={{ 
@@ -272,8 +272,8 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
             pointerEvents: 'auto',
             maxHeight: currentStep >= questions.length ? '100vh' : '90vh',
             height: currentStep >= questions.length ? '100vh' : 'auto',
-            width: currentStep >= questions.length ? '98vw' : 'calc(100% - 2rem)',
-            maxWidth: currentStep >= questions.length ? '115.2rem' : '48rem' // Increased by 20% from 96rem (96 * 1.2 = 115.2)
+            width: currentStep >= questions.length ? '100vw' : 'calc(100% - 2rem)',
+            maxWidth: currentStep >= questions.length ? 'none' : '48rem'
           }}
         >
           {/* Close Button */}
