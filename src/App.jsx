@@ -37,12 +37,15 @@ function App() {
   return (
     <ErrorBoundary>
         <div className="App min-h-screen bg-bg text-white">
-        {/* Clean modern website */}
+        {/* Accessibility: Skip to main content */}
+        <a href="#main-content" className="skip-to-main">
+          Skip to main content
+        </a>
         
         {/* Website Content */}
         <div className="relative z-20">
         <Header />
-        <main>
+        <main id="main-content">
           <Hero />
           
           <div className="section-bg-1 relative z-10 pt-8 md:pt-12">

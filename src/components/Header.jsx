@@ -79,9 +79,10 @@ function Header() {
           {/* Book an Audit Button */}
           <motion.button 
             onClick={() => scrollToSection('top')}
-            className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
+            className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 min-h-[44px] min-w-[44px]"
             whileHover={{ scale: 1.05, y: -1 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="Book an Audit"
           >
             <span className="hidden sm:inline">Book an Audit</span>
             <span className="sm:hidden">Book</span>
@@ -89,6 +90,7 @@ function Header() {
               animate={{ x: [0, 2, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
               className="ml-1 sm:ml-2"
+              aria-hidden="true"
             >
               →
             </motion.div>

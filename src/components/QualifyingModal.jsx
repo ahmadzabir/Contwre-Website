@@ -224,12 +224,13 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-1 right-1 sm:top-2 sm:right-2 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg"
+            className="absolute top-1 right-1 sm:top-2 sm:right-2 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg min-w-[44px] min-h-[44px]"
             style={{ 
               position: 'absolute',
               top: '4px',
               right: '4px'
             }}
+            aria-label="Close modal"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -278,18 +279,19 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 </h2>
 
                 <div className="flex-1 overflow-y-auto space-y-2 md:space-y-3 pr-2 w-full max-w-2xl mx-auto">
-                  {questions[currentStep].options.map((option) => (
-                    <motion.button
-                      key={option.value}
-                      onClick={() => handleAnswer(questions[currentStep].id, option.value)}
-                      className={`w-full p-3 md:p-4 text-left rounded-xl border transition-all duration-300 relative overflow-hidden flex-shrink-0 ${
-                        answers[questions[currentStep].id] === option.value
-                          ? 'border-emerald-400/50 bg-emerald-400/10 text-white card-glass'
-                          : 'border-white/10 bg-white/5 text-body-secondary hover:border-emerald-400/30 hover:bg-white/10 card-glass'
-                      }`}
-                      whileHover={{ scale: 1.01, y: -2 }}
-                      whileTap={{ scale: 0.99 }}
-                    >
+                         {questions[currentStep].options.map((option) => (
+                           <motion.button
+                             key={option.value}
+                             onClick={() => handleAnswer(questions[currentStep].id, option.value)}
+                             className={`w-full p-4 md:p-5 text-left rounded-xl border transition-all duration-300 relative overflow-hidden flex-shrink-0 min-h-[56px] md:min-h-[64px] ${
+                               answers[questions[currentStep].id] === option.value
+                                 ? 'border-emerald-400/50 bg-emerald-400/10 text-white card-glass'
+                                 : 'border-white/10 bg-white/5 text-body-secondary hover:border-emerald-400/30 hover:bg-white/10 card-glass'
+                             }`}
+                             whileHover={{ scale: 1.01, y: -2 }}
+                             whileTap={{ scale: 0.99 }}
+                             aria-label={option.label}
+                           >
                       {answers[questions[currentStep].id] === option.value && (
                         <motion.div
                           className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-emerald-500/5 to-teal-400/5"
@@ -373,9 +375,10 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
                 <div className="flex justify-center pt-2 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-sm"
+                    className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-sm min-h-[48px] min-w-[200px]"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
+                    aria-label="Email me the booking link"
                   >
                     Email me the link
                   </motion.button>

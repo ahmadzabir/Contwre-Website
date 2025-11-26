@@ -120,11 +120,13 @@ function FAQ() {
               viewport={{ once: true }}
               className="group"
             >
-              <div 
-                className={`card-glass p-8 cursor-pointer transition-all duration-500 group-hover:shadow-glass-lg relative overflow-hidden ${
+              <button
+                className={`card-glass p-6 sm:p-8 cursor-pointer transition-all duration-500 group-hover:shadow-glass-lg relative overflow-hidden w-full text-left min-h-[64px] sm:min-h-[72px] ${
                   openIndex === index ? 'bg-gradient-to-r from-mint/10 to-blue/10 border-mint/30' : ''
                 }`}
                 onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
               >
                 {/* Mint Glow Highlight */}
                 {openIndex === index && (
@@ -139,7 +141,8 @@ function FAQ() {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <motion.h3 
-                      className={`text-xl font-bold transition-colors duration-300 ${
+                      id={`faq-question-${index}`}
+                      className={`text-lg sm:text-xl font-bold transition-colors duration-300 ${
                         openIndex === index ? 'text-emerald-400' : 'text-white group-hover:text-emerald-400'
                       }`}
                     >
@@ -159,14 +162,17 @@ function FAQ() {
                   <AnimatePresence>
                     {openIndex === index && (
                       <motion.div
+                        id={`faq-answer-${index}`}
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="overflow-hidden"
+                        role="region"
+                        aria-labelledby={`faq-question-${index}`}
                       >
                         <motion.p 
-                          className="text-body-secondary text-lg leading-relaxed mt-6"
+                          className="text-body-secondary text-base sm:text-lg leading-relaxed mt-4 sm:mt-6"
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1, duration: 0.3 }}
@@ -177,7 +183,7 @@ function FAQ() {
                     )}
                   </AnimatePresence>
                 </div>
-              </div>
+              </button>
             </motion.div>
           ))}
         </div>

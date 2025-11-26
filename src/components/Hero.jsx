@@ -196,16 +196,20 @@ function Hero() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your work email here and..."
-                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-white text-gray-800 placeholder-gray-500 focus:outline-none text-base sm:text-lg rounded-lg sm:rounded-xl border-0"
+                  className="flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-white text-gray-800 placeholder-gray-500 focus:outline-none text-base sm:text-lg rounded-lg sm:rounded-xl border-0 min-h-[48px] sm:min-h-[52px]"
                   required
                   disabled={isSubmitting}
+                  autoComplete="email"
+                  inputMode="email"
+                  aria-label="Email address"
                 />
                 <motion.button
                   type="submit"
-                  className="btn-primary-lg"
+                  className="btn-primary-lg min-h-[48px] sm:min-h-[52px]"
                   whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
                   whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
                   disabled={isSubmitting}
+                  aria-label={isSubmitting ? 'Submitting email' : 'Submit email'}
                 >
                   {isSubmitting ? 'Sending...' : submitStatus === 'success' ? 'Sent!' : 'Press Send'}
                 </motion.button>

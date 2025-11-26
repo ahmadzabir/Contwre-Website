@@ -64,6 +64,55 @@ html {
   }
 }
 
+/* Mobile touch targets - minimum 44x44px for accessibility */
+button, a, [role="button"], input[type="submit"], input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation; /* Prevents double-tap zoom on mobile */
+}
+
+/* Better mobile spacing */
+@media (max-width: 640px) {
+  .section-spacing {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  /* Increase tap targets on mobile */
+  button, a, [role="button"] {
+    min-height: 48px;
+    padding: 12px 20px;
+  }
+}
+
+/* Improve text readability on mobile */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+    line-height: 1.6;
+  }
+  
+  /* Better spacing for mobile */
+  h1, h2, h3 {
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Performance: Reduce animations on low-end devices */
+@media (prefers-reduced-motion: no-preference) {
+  @media (max-width: 768px) {
+    * {
+      animation-duration: 0.3s !important;
+      transition-duration: 0.2s !important;
+    }
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(16, 185, 129, 0.8) rgba(0, 0, 0, 0.2);
@@ -98,16 +147,41 @@ body {
   /* Reduce paint operations - use contain for better performance */
   contain: layout style paint;
   /* Remove will-change - let browser optimize automatically */
-  
-  /* Main Website Background - Simplified for performance */
-  background: linear-gradient(135deg, 
-    #0f1419 0%, 
-    #1a1a2e 25%, 
-    #16213e 50%, 
-    #0a0a0f 75%, 
-    #0f1419 100%);
-  background-attachment: fixed;
-  position: relative;
+  /* Prevent text size adjustment on iOS */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Improve image loading performance */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Better focus states for accessibility */
+*:focus-visible {
+  outline: 2px solid #10B981;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to main content link for accessibility */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1em;
+  background: #10B981;
+  color: white;
+  text-decoration: none;
+}
+
+.skip-to-main:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 1em;
 }
 
 /* Subtle sandpaper effect across entire website */
