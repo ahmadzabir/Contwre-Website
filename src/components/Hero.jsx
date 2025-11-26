@@ -253,7 +253,7 @@ function Hero() {
         isOpen={showModal}
         onClose={() => {
           setShowModal(false)
-          setEmail('') // Clear email when modal closes
+          // Email will be cleared by modal's handleClose which tracks drop-off
         }}
         email={email}
         onSubmit={handleQualifyingSubmit}

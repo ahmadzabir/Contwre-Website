@@ -161,6 +161,32 @@ function ProofTrustBar() {
           }
         }
         
+        /* Slower animation on mobile devices */
+        @media (max-width: 768px) {
+          .carousel-track {
+            animation: infiniteScroll 35s linear infinite;
+            gap: 3rem;
+          }
+          
+          .carousel-item {
+            width: 10rem;
+            height: 3rem;
+          }
+        }
+        
+        /* Even slower on very small screens */
+        @media (max-width: 640px) {
+          .carousel-track {
+            animation: infiniteScroll 40s linear infinite;
+            gap: 2.5rem;
+          }
+          
+          .carousel-item {
+            width: 9rem;
+            height: 2.5rem;
+          }
+        }
+        
         /* Pause animation on hover for better UX */
         .carousel-container:hover .carousel-track {
           animation-play-state: paused;

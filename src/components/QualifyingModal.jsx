@@ -1,16 +1,107 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getStoredTrackingData } from '../utils/utmTracker'
 
 function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const scrollPositionRef = useRef(0)
+  const modalOpenTimeRef = useRef(null)
+  const hasTrackedDropoffRef = useRef(false)
 
-  // Debug logging
+  // Track modal open time
   useEffect(() => {
-    console.log('QualifyingModal render - isOpen:', isOpen, 'email:', email)
-  }, [isOpen, email])
+    if (isOpen) {
+      modalOpenTimeRef.current = Date.now()
+      hasTrackedDropoffRef.current = false
+    }
+  }, [isOpen])
+
+  // Function to send drop-off tracking data
+  const sendDropoffTracking = async (dropoffStage, booked = false) => {
+    if (hasTrackedDropoffRef.current) return // Prevent duplicate tracking
+    hasTrackedDropoffRef.current = true
+
+    const currentTrackingData = getStoredTrackingData()
+    const timeSpent = modalOpenTimeRef.current ? Math.round((Date.now() - modalOpenTimeRef.current) / 1000) : 0
+    const questionsCompleted = Object.keys(answers).length
+    const allQuestionsAnswered = questionsCompleted === questions.length
+
+    // Determine completion status and drop-off stage
+    let completionStatus = 'dropped_off'
+    let dropOffStage = dropoffStage
+
+    if (booked) {
+      completionStatus = 'completed'
+      dropOffStage = 'completed_booking'
+    } else if (allQuestionsAnswered && currentStep >= questions.length) {
+      dropOffStage = 'viewed_booking'
+    } else if (questionsCompleted > 0) {
+      dropOffStage = `question_${questionsCompleted + 1}`
+    } else if (email) {
+      dropOffStage = 'question_1'
+    } else {
+      dropOffStage = 'email_only'
+    }
+
+    const payload = {
+      // Easy notification tags
+      email_submitted: !!email,
+      questions_completed: questionsCompleted,
+      total_questions: questions.length,
+      booked: booked,
+      completion_status: completionStatus,
+      drop_off_stage: dropOffStage,
+      
+      // Detailed data
+      email: email || null,
+      answers: answers,
+      current_step: currentStep,
+      time_spent_seconds: timeSpent,
+      
+      // UTM Parameters
+      utm_source: currentTrackingData.utm_source || null,
+      utm_medium: currentTrackingData.utm_medium || null,
+      utm_campaign: currentTrackingData.utm_campaign || null,
+      utm_term: currentTrackingData.utm_term || null,
+      utm_content: currentTrackingData.utm_content || null,
+      
+      // Additional source tracking
+      source_param: currentTrackingData.source || null,
+      
+      // Referrer information
+      referrer: currentTrackingData.referrer || 'direct',
+      landing_page: currentTrackingData.landingPage || window.location.href,
+      
+      // Device and session info
+      user_agent: currentTrackingData.userAgent || navigator.userAgent,
+      screen_width: currentTrackingData.screenWidth || window.screen.width,
+      screen_height: currentTrackingData.screenHeight || window.screen.height,
+      language: currentTrackingData.language || navigator.language,
+      timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+      first_visit: currentTrackingData.firstVisit || false,
+      
+      // Page context
+      page_url: window.location.href,
+      page_path: window.location.pathname,
+      timestamp: new Date().toISOString(),
+      event_type: booked ? 'booking_completed' : 'drop_off'
+    }
+
+    try {
+      await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      })
+      console.log('Drop-off tracking sent:', dropOffStage)
+    } catch (error) {
+      console.error('Error sending drop-off tracking:', error)
+    }
+  }
 
   // Prevent body scroll when modal is open and lock scroll position
   useEffect(() => {
@@ -136,9 +227,34 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     }, 300)
   }
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    // Track booking completion
+    await sendDropoffTracking('completed_booking', true)
+    
     // Submit all data including answers
     onSubmit(answers)
+    onClose()
+  }
+
+  // Track drop-off when modal closes
+  const handleClose = () => {
+    // Only track if we haven't already tracked a completion
+    if (!hasTrackedDropoffRef.current) {
+      // Determine drop-off stage
+      let dropoffStage = 'email_only'
+      if (currentStep >= questions.length) {
+        dropoffStage = 'viewed_booking'
+      } else if (Object.keys(answers).length > 0) {
+        dropoffStage = `question_${Object.keys(answers).length + 1}`
+      } else if (email) {
+        dropoffStage = 'question_1'
+      }
+      
+      // Send drop-off tracking (async, don't wait)
+      sendDropoffTracking(dropoffStage, false)
+    }
+    
+    // Close modal
     onClose()
   }
 
@@ -174,7 +290,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
+          onClick={handleClose}
           className="fixed inset-0 bg-black/70 backdrop-blur-md"
           style={{ 
             position: 'fixed', 
@@ -223,7 +339,7 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
         >
           {/* Close Button */}
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-1 right-1 sm:top-2 sm:right-2 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors z-50 bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-sm border border-white/10 shadow-lg min-w-[44px] min-h-[44px]"
             style={{ 
               position: 'absolute',
