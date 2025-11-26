@@ -45,49 +45,45 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
       dropOffStage = 'email_only'
     }
 
-    // Build payload, removing null/undefined values and converting to strings where needed
+    // Clean, minimal payload - only essential data
     const payload = {
-      // Easy notification tags
-      email_submitted: String(!!email),
-      questions_completed: String(questionsCompleted),
-      total_questions: String(questions.length),
-      booked: String(booked),
-      completion_status: completionStatus,
-      drop_off_stage: dropOffStage,
+      // Core data
+      e: email || '', // email
+      ts: new Date().toISOString(), // timestamp
+      evt: booked ? 'booked' : 'drop', // event_type
       
-      // Detailed data
-      email: email || '',
-      answers: JSON.stringify(answers),
-      current_step: String(currentStep),
-      time_spent_seconds: String(timeSpent),
+      // Easy notification tags (short names)
+      es: email ? '1' : '0', // email_submitted
+      qc: String(questionsCompleted), // questions_completed
+      tq: String(questions.length), // total_questions
+      b: booked ? '1' : '0', // booked
+      cst: completionStatus, // completion_status
+      dos: dropOffStage, // drop_off_stage
       
-      // UTM Parameters (only include if they exist)
-      ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
-      ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
-      ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
-      ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
-      ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
+      // Answers (compact format)
+      ...(Object.keys(answers).length > 0 && { 
+        a: Object.entries(answers).map(([k, v]) => `${k}=${v}`).join('|') // answers as compact string
+      }),
       
-      // Additional source tracking
-      ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
+      // Step and time
+      stp: String(currentStep), // current_step
+      tms: String(timeSpent), // time_spent_seconds
       
-      // Referrer information
-      referrer: currentTrackingData.referrer || 'direct',
-      landing_page: currentTrackingData.landingPage || window.location.href,
+      // UTM (only if exists, short names)
+      ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }),
+      ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }),
+      ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }),
+      ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }),
+      ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }),
       
-      // Device and session info
-      user_agent: currentTrackingData.userAgent || navigator.userAgent,
-      screen_width: String(currentTrackingData.screenWidth || window.screen.width),
-      screen_height: String(currentTrackingData.screenHeight || window.screen.height),
-      language: currentTrackingData.language || navigator.language,
-      timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      first_visit: String(currentTrackingData.firstVisit || false),
+      // Source param
+      ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }),
       
-      // Page context
-      page_url: window.location.href,
-      page_path: window.location.pathname,
-      timestamp: new Date().toISOString(),
-      event_type: booked ? 'booking_completed' : 'drop_off'
+      // Essential tracking only
+      ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
+      lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
+      tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
+      fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
     }
 
     try {

@@ -28,38 +28,34 @@ function Hero() {
     // Get the most up-to-date tracking data
     const currentTrackingData = getStoredTrackingData()
 
-    // Build payload, only including fields with values (no nulls)
+    // Clean, minimal payload - only essential data
     const payload = {
-      email: email,
-      timestamp: new Date().toISOString(),
-      source: 'hero-section-qualified',
-      event_type: 'qualifying_completed',
-      // Qualifying answers (only include if they exist)
-      ...(answers.revenue_stage && { revenue_stage: String(answers.revenue_stage) }),
-      ...(answers.biggest_challenge && { biggest_challenge: String(answers.biggest_challenge) }),
-      ...(answers.primary_channel && { primary_channel: String(answers.primary_channel) }),
-      ...(answers.timeline && { timeline: String(answers.timeline) }),
-      // UTM Parameters (only include if they exist)
-      ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
-      ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
-      ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
-      ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
-      ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
-      // Additional source tracking
-      ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
-      // Referrer information
-      referrer: currentTrackingData.referrer || 'direct',
-      landing_page: currentTrackingData.landingPage || window.location.href,
-      // Device and session info
-      user_agent: currentTrackingData.userAgent || navigator.userAgent,
-      screen_width: String(currentTrackingData.screenWidth || window.screen.width),
-      screen_height: String(currentTrackingData.screenHeight || window.screen.height),
-      language: currentTrackingData.language || navigator.language,
-      timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-      first_visit: String(currentTrackingData.firstVisit || false),
-      // Page context
-      page_url: window.location.href,
-      page_path: window.location.pathname
+      e: email, // email
+      ts: new Date().toISOString(), // timestamp
+      evt: 'qualified', // event_type: qualifying_completed
+      src: 'hero', // source
+      
+      // Answers (compact format)
+      a: Object.entries(answers)
+        .filter(([_, v]) => v) // only include answers with values
+        .map(([k, v]) => `${k}=${v}`)
+        .join('|'), // answers as compact string: "revenue_stage=100k-1m|biggest_challenge=lead_generation"
+      
+      // UTM (only if exists, short names)
+      ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }),
+      ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }),
+      ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }),
+      ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }),
+      ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }),
+      
+      // Source param
+      ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }),
+      
+      // Essential tracking only
+      ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
+      lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
+      tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
+      fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
     }
 
     try {
@@ -97,33 +93,25 @@ function Hero() {
     const currentTrackingData = getStoredTrackingData()
 
     try {
-      // Build payload, only including fields with values (no nulls)
+      // Clean, minimal payload - only essential data
       const payload = {
-        email: email,
-        timestamp: new Date().toISOString(),
-        source: 'hero-section',
-        // UTM Parameters (only include if they exist)
-        ...(currentTrackingData.utm_source && { utm_source: String(currentTrackingData.utm_source) }),
-        ...(currentTrackingData.utm_medium && { utm_medium: String(currentTrackingData.utm_medium) }),
-        ...(currentTrackingData.utm_campaign && { utm_campaign: String(currentTrackingData.utm_campaign) }),
-        ...(currentTrackingData.utm_term && { utm_term: String(currentTrackingData.utm_term) }),
-        ...(currentTrackingData.utm_content && { utm_content: String(currentTrackingData.utm_content) }),
-        // Additional source tracking
-        ...(currentTrackingData.source && { source_param: String(currentTrackingData.source) }),
-        // Referrer information
-        referrer: currentTrackingData.referrer || 'direct',
-        landing_page: currentTrackingData.landingPage || window.location.href,
-        // Device and session info
-        user_agent: currentTrackingData.userAgent || navigator.userAgent,
-        screen_width: String(currentTrackingData.screenWidth || window.screen.width),
-        screen_height: String(currentTrackingData.screenHeight || window.screen.height),
-        language: currentTrackingData.language || navigator.language,
-        timezone: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-        first_visit: String(currentTrackingData.firstVisit || false),
-        // Page context
-        page_url: window.location.href,
-        page_path: window.location.pathname,
-        event_type: 'email_submitted'
+        e: email, // email
+        ts: new Date().toISOString(), // timestamp
+        evt: 'email', // event_type: email_submitted
+        src: 'hero', // source
+        // UTM (only if exists)
+        ...(currentTrackingData.utm_source && { us: String(currentTrackingData.utm_source) }), // utm_source
+        ...(currentTrackingData.utm_medium && { um: String(currentTrackingData.utm_medium) }), // utm_medium
+        ...(currentTrackingData.utm_campaign && { uc: String(currentTrackingData.utm_campaign) }), // utm_campaign
+        ...(currentTrackingData.utm_term && { ut: String(currentTrackingData.utm_term) }), // utm_term
+        ...(currentTrackingData.utm_content && { uco: String(currentTrackingData.utm_content) }), // utm_content
+        // Source param
+        ...(currentTrackingData.source && { sp: String(currentTrackingData.source) }), // source_param
+        // Essential tracking only
+        ref: (currentTrackingData.referrer || 'direct').substring(0, 100), // referrer (truncated)
+        lang: (currentTrackingData.language || navigator.language).substring(0, 10), // language
+        tz: currentTrackingData.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone, // timezone
+        fv: currentTrackingData.firstVisit ? '1' : '0' // first_visit
       }
 
       const response = await fetch('https://services.leadconnectorhq.com/hooks/rJH23wA36ehJ4HrNaTkV/webhook-trigger/acfc248f-f26e-4b8a-a046-619abc300d31', {
