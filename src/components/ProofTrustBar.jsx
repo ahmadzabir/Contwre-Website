@@ -161,14 +161,14 @@ function ProofTrustBar() {
           }
         }
         
-        /* Much slower animation on mobile devices */
+        /* Much slower animation on mobile devices - higher specificity */
         @media (max-width: 768px) {
-          .carousel-track {
-            animation: infiniteScroll 90s linear infinite;
+          .carousel-container .carousel-track {
+            animation: infiniteScroll 120s linear infinite !important;
             gap: 2.5rem;
           }
           
-          .carousel-item {
+          .carousel-container .carousel-item {
             width: 10rem;
             height: 3rem;
           }
@@ -176,12 +176,12 @@ function ProofTrustBar() {
         
         /* Even slower on very small screens */
         @media (max-width: 640px) {
-          .carousel-track {
-            animation: infiniteScroll 120s linear infinite;
+          .carousel-container .carousel-track {
+            animation: infiniteScroll 150s linear infinite !important;
             gap: 2rem;
           }
           
-          .carousel-item {
+          .carousel-container .carousel-item {
             width: 9rem;
             height: 2.5rem;
           }
