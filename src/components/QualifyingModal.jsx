@@ -6,9 +6,6 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState({})
   const scrollPositionRef = useRef(0)
-  const iframeContainerRef = useRef(null)
-  const iframeRef = useRef(null)
-  const [scaleFactor, setScaleFactor] = useState(1)
 
   // Debug logging
   useEffect(() => {
@@ -116,102 +113,6 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
     onClose()
   }
 
-  // Calculate iframe scale to fit container based on actual dimensions
-  useEffect(() => {
-    if (currentStep >= questions.length && iframeContainerRef.current) {
-      const calculateScale = () => {
-        const container = iframeContainerRef.current
-        const iframe = iframeRef.current
-        if (!container || !iframe) return
-
-        // Get container dimensions (available space)
-        const containerRect = container.getBoundingClientRect()
-        const availableWidth = containerRect.width
-        const availableHeight = containerRect.height
-
-        // GHL (GoHighLevel) calendar iframes don't have fixed dimensions
-        // Increased height by 40%: 1100px * 1.4 = 1540px
-        // Using 1000px width and 1540px height for larger, more visible calendar
-        let iframeNaturalWidth = 1000
-        let iframeNaturalHeight = 1540 // Increased by 40% from 1100px (1100 * 1.4 = 1540)
-
-        // Try to access iframe dimensions if same-origin (unlikely but worth trying)
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
-          if (iframeDoc) {
-            const body = iframeDoc.body
-            if (body) {
-              iframeNaturalWidth = Math.max(body.scrollWidth, body.offsetWidth, 1000)
-              iframeNaturalHeight = Math.max(body.scrollHeight, body.offsetHeight, 1540)
-            }
-          }
-        } catch (e) {
-          // Cross-origin - use GHL recommended dimensions with 40% height increase
-          // GHL calendars work best with 1000px width and 1540px height (40% increase)
-          iframeNaturalWidth = 1000
-          iframeNaturalHeight = 1540
-        }
-
-        // Calculate scale factors for both dimensions
-        const scaleX = availableWidth / iframeNaturalWidth
-        const scaleY = availableHeight / iframeNaturalHeight
-
-        // Use the smaller scale to ensure it fits in both dimensions
-        // Use 0.95 to maximize size while ensuring it fits
-        const calculatedScale = Math.min(scaleX, scaleY, 1) * 0.95
-
-        setScaleFactor(Math.max(calculatedScale, 0.4)) // Minimum scale of 0.4
-      }
-
-      // Calculate on mount
-      const timeoutId = setTimeout(() => {
-        calculateScale()
-      }, 100)
-
-      // Recalculate on window resize
-      const resizeObserver = new ResizeObserver(() => {
-        calculateScale()
-      })
-      
-      if (iframeContainerRef.current) {
-        resizeObserver.observe(iframeContainerRef.current)
-      }
-
-      // Also listen to window resize as fallback
-      window.addEventListener('resize', calculateScale)
-
-      // Try to measure iframe after it loads
-      const iframe = iframeRef.current
-      if (iframe) {
-        const handleLoad = () => {
-          // Wait for content to fully render
-          setTimeout(() => {
-            calculateScale()
-          }, 1000)
-        }
-        iframe.addEventListener('load', handleLoad)
-        
-        // Also try after a delay in case load event doesn't fire
-        const delayedCheck = setTimeout(() => {
-          calculateScale()
-        }, 2000)
-        
-        return () => {
-          clearTimeout(timeoutId)
-          clearTimeout(delayedCheck)
-          resizeObserver.disconnect()
-          window.removeEventListener('resize', calculateScale)
-          iframe.removeEventListener('load', handleLoad)
-        }
-      }
-
-      return () => {
-        clearTimeout(timeoutId)
-        resizeObserver.disconnect()
-        window.removeEventListener('resize', calculateScale)
-      }
-    }
-  }, [currentStep, questions.length])
 
   if (!isOpen) return null
 
@@ -359,69 +260,60 @@ function QualifyingModal({ isOpen, onClose, email, onSubmit }) {
               </motion.div>
             )}
 
-            {/* Booking Embed */}
+            {/* Booking Embed - Completely Recoded */}
             {currentStep >= questions.length && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex-1 flex flex-col overflow-hidden min-h-0 w-full"
-                style={{ minHeight: 0, flex: '1 1 0%', height: '100%' }}
+                className="flex-1 flex flex-col w-full h-full"
+                style={{ 
+                  minHeight: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%'
+                }}
               >
-                <div className="text-center mb-0 flex-shrink-0">
-                  <h2 className="text-xs sm:text-sm font-bold gradient-text-emerald mb-0 leading-tight">
+                {/* Header */}
+                <div className="text-center mb-2 flex-shrink-0">
+                  <h2 className="text-sm sm:text-base font-bold gradient-text-emerald leading-tight">
                     Schedule Your Strategy Call
                   </h2>
                 </div>
 
+                {/* Iframe Container - Simple and Clean */}
                 <div 
-                  ref={iframeContainerRef}
-                  className="flex-1 w-full rounded-xl overflow-hidden border border-white/10" 
+                  className="flex-1 w-full rounded-xl overflow-hidden border border-white/10 bg-white/5" 
                   style={{ 
-                    minHeight: 0, 
                     flex: '1 1 0%',
+                    minHeight: 0,
                     display: 'flex',
-                    flexDirection: 'column',
-                    height: 'calc(100% - 50px)', // Space for header and button
-                    position: 'relative',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    overflow: 'hidden',
-                    // Match aspect ratio of iframe: 1000/1540 = 0.649
-                    aspectRatio: '1000 / 1540'
+                    alignItems: 'stretch',
+                    justifyContent: 'stretch',
+                    position: 'relative'
                   }}
                 >
-                  <div style={{
-                    width: '1000px', // GHL calendar natural width
-                    height: '1540px', // GHL calendar natural height (increased by 40% from 1100px)
-                    transform: `scale(${scaleFactor})`,
-                    transformOrigin: 'center center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflow: 'visible'
-                  }}>
-                    <iframe
-                      ref={iframeRef}
-                      src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
-                      style={{ 
-                        width: '1000px',
-                        height: '1540px', // Increased by 40% from 1100px
-                        border: 'none', 
-                        display: 'block',
-                        flex: '1 1 0%',
-                        minHeight: 0,
-                        overflow: 'hidden' // Prevent scrollbars as per GHL recommendation
-                      }}
-                      scrolling="no"
-                      id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
-                      className="rounded-xl"
-                    />
-                  </div>
+                  <iframe
+                    src="https://api.leadconnectorhq.com/widget/booking/nwl0FSucuvIA6uVEz2Ix"
+                    style={{ 
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      display: 'block',
+                      minHeight: 0,
+                      flex: '1 1 0%'
+                    }}
+                    scrolling="yes"
+                    allow="fullscreen"
+                    id="nwl0FSucuvIA6uVEz2Ix_1764050901890"
+                    className="rounded-xl"
+                  />
                 </div>
 
-                <div className="flex justify-center pt-0 flex-shrink-0">
+                {/* Button */}
+                <div className="flex justify-center pt-2 flex-shrink-0">
                   <motion.button
                     onClick={handleComplete}
-                    className="px-2 sm:px-3 py-1 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-xs"
+                    className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-600 hover:to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 text-sm"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
